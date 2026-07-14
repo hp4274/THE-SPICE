@@ -41,7 +41,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!--====== MAIN STYLESHEETS ======-->
-    <link href="style.css" rel="stylesheet">
+    <link href="style.css?v=3" rel="stylesheet">
     <link href="css/responsive.css" rel="stylesheet">
 
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
@@ -205,9 +205,14 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <a href="#home" class="navbar-brand"><img src="img/logo.jpeg" alt="The Spice logo"></a>
-                            <a href="#home" class="navbar-brand white"><img src="img/logo.jpeg"
-                                    alt="The Spice logo"></a>
+                            <a href="#home" class="navbar-brand">
+                                <img src="img/logo.jpeg" alt="The Spice logo" class="desktop-logo">
+                                <img src="img/logo-text.png" alt="The Spice logo" class="mobile-logo">
+                            </a>
+                            <a href="#home" class="navbar-brand white">
+                                <img src="img/logo.jpeg" alt="The Spice logo" class="desktop-logo">
+                                <img src="img/logo-text.png" alt="The Spice logo" class="mobile-logo">
+                            </a>
                         </div>
                         <div class="collapse navbar-collapse bs-example-js-navbar-scrollspy">
                             <div class="search-form-area">
@@ -239,21 +244,21 @@
                 <div class="row">
                     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                         <div class="welcome-text">
-                            <h2>Experience Authentic Indian Flavours</h2>
+                            <h2>Experience Authentic<br>Indian Flavors</h2>
                             <h1 class="cd-headline clip is-full-width">
-                                <span class="hero-text">The Spice</span>
-                                <span class="cd-words-wrapper">
+                                <span class="hero-text">THE SPICE</span>
+                                <span class="cd-words-wrapper desktop-only-words">
                                     <b class="is-visible">The Indian Buffet</b>
                                     <b>The Restaurant Interior</b>
                                     <b>Beautiful Indian Dishes</b>
                                     <b>Sea-view Dining</b>
                                 </span>
                             </h1>
-                            <p>Discover a delicious all-you-can-eat Indian buffet prepared with fresh ingredients,
+                            <p class="desktop-hero-text">Discover a delicious all-you-can-eat Indian buffet prepared with fresh ingredients,
                                 authentic spices, and traditional recipes in our elegant seafront restaurant.</p>
-                            <a class="home-reservation-button" href="#booking">Book a
-                                Table</a>
-                            <a class="home-reservation-button" href="#menu">View Menu</a>
+                            <p class="mobile-hero-text">Discover a blend of rich spices and timeless recipes in every bite.</p>
+                            <a class="home-reservation-button" href="#booking">Book a Table</a>
+                            <a class="home-reservation-button desktop-hero-btn" href="#menu">View Menu</a>
                         </div>
                     </div>
                 </div>
@@ -745,22 +750,22 @@
                         </div>
                         <div class="menu-item-list">
                             <div class="menu-item">
-                                <h4>1. Salad</h4>
+                                <h4>Salad</h4>
                                 <p>A fresh, crisp mix of garden greens, sliced cucumber, cherry tomatoes, and red
                                     onions, lightly dressed to cleanse the palate.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>2. Papadums</h4>
+                                <h4>Papadums</h4>
                                 <p>Crisp, sun-dried lentil wafers flash-fried until light and crackly. Served as the
                                     perfect crunchy appetite-starter.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>3. Mint Yogurt</h4>
+                                <h4>Mint Yogurt</h4>
                                 <p>A cool, refreshing yogurt blend whisked with fresh mint leaves, grated cucumber, and
                                     a touch of roasted cumin to perfectly balance spicy flavors.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>4. Red Chutney</h4>
+                                <h4>Red Chutney</h4>
                                 <p>A vibrant, tangy-sweet condiment made from crisp red bell peppers, cucumber, and
                                     onions, blended with rich tomato ketchup and a kick of fiery red chili paste.</p>
                             </div>
@@ -782,22 +787,22 @@
                         </div>
                         <div class="menu-item-list">
                             <div class="menu-item">
-                                <h4>1. Chilli Paneer</h4>
+                                <h4>Chilli Paneer</h4>
                                 <p>Crispy paneer cubes tossed in a wok with crunchy peppers, onions, and spicy soy-chili
                                     glaze.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>2. Veg Samosa</h4>
+                                <h4>Veg Samosa</h4>
                                 <p>Crisp, golden pastry pyramids stuffed with a spiced mixture of smashed potatoes,
                                     green peas, and fragrant cumin. Served with tangy chutneys.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>3. Hara Bhara Kebab</h4>
+                                <h4>Hara Bhara Kebab</h4>
                                 <p>Pan-seared spinach, green pea, and potato patties, subtly spiced and enriched with
                                     fresh coriander and mint. Crispy on the outside, soft on the inside.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>4. Crispy Bhaji</h4>
+                                <h4>Crispy Bhaji</h4>
                                 <p>Lightly battered, deeply fried onion and vegetable fritters, seasoned with
                                     traditional spices for the ultimate crunch.</p>
                             </div>
@@ -837,23 +842,23 @@
                         </div>
                         <div class="menu-item-list">
                             <div class="menu-item">
-                                <h4>1. Chicken Tikka</h4>
+                                <h4>Chicken Tikka</h4>
                                 <p>Succulent boneless chicken marinated overnight in yogurt, aromatic spices, and herbs,
                                     then roasted in the tandoor to achieve a smoky char and juicy finish.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>2. Chilli Chicken</h4>
+                                <h4>Chilli Chicken</h4>
                                 <p>Crispy chicken pieces tossed in a bold Indo-Chinese sauce with fresh peppers, onions,
                                     garlic, and green chillies, delivering the perfect balance of spice and savoury
                                     flavours.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>3. Lamb Seekh Kebab</h4>
+                                <h4>Lamb Seekh Kebab</h4>
                                 <p>Minced lamb blended with fresh herbs, fragrant spices, and onions, hand-shaped onto
                                     skewers and grilled in the tandoor until tender, smoky, and full of flavour.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>4. Meat Samosa</h4>
+                                <h4>Meat Samosa</h4>
                                 <p>Golden, flaky pastry filled with a savoury mixture of seasoned minced meat, onions,
                                     and traditional spices, fried until perfectly crisp and served as a classic starter.
                                 </p>
@@ -876,22 +881,22 @@
                         </div>
                         <div class="menu-item-list">
                             <div class="menu-item">
-                                <h4>1. Chana Masala</h4>
+                                <h4>Chana Masala</h4>
                                 <p>Tender chickpeas slow-simmered in a rustic, tangier onion-tomato gravy infused with a
                                     traditional spice blend, fresh ginger, and green chilies.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>2. Saag Aloo</h4>
+                                <h4>Saag Aloo</h4>
                                 <p>Tender, diced potatoes cooked with fresh, iron-rich spinach and a blend of aromatic
                                     spices, garlic, and ginger.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>3. Paneer Butter Masala</h4>
+                                <h4>Paneer Butter Masala</h4>
                                 <p>Golden cubes of fresh cottage cheese simmered in a rich, velvety tomato and cashew
                                     nut gravy, finished with a touch of butter, cream, and dried fenugreek leaves.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>4. Tadka Dal</h4>
+                                <h4>Tadka Dal</h4>
                                 <p>Nutritious yellow lentils slow-simmered with turmeric, garlic, and ginger, finished
                                     with a fresh, aromatic tempering (tadka) of ghee, cumin seeds, and smoky whole red
                                     chilies.</p>
@@ -930,22 +935,22 @@
                         </div>
                         <div class="menu-item-list">
                             <div class="menu-item">
-                                <h4>1. Chicken Tikka Masala</h4>
+                                <h4>Chicken Tikka Masala</h4>
                                 <p>Tender, clay-oven-roasted chicken pieces simmered in a rich, creamy tomato gravy. A
                                     crowd-favourite masterpiece.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>2. Chicken Korma</h4>
+                                <h4>Chicken Korma</h4>
                                 <p>Succulent chicken slow-cooked in a velvety, mild sauce of yogurt, cream, and delicate
                                     cashew paste. Pure comfort.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>3. Chicken Karahi</h4>
+                                <h4>Chicken Karahi</h4>
                                 <p>A robust, wok-tossed classic featuring diced chicken, fresh tomatoes, ginger, and
                                     crushed spices. Vibrant and full of character.</p>
                             </div>
                             <div class="menu-item">
-                                <h4>4. Lamb Maharaja</h4>
+                                <h4>Lamb Maharaja</h4>
                                 <p>Regal, tender chunks of lamb slow-braised in a prestigious, deeply layered gravy
                                     infused with exotic spices. Fit for royalty.</p>
                             </div>
