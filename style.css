@@ -1386,7 +1386,9 @@ option {
 }
 
 .team-member-img img {
-    width: 100%;
+    width: 210px;
+    height: 250px;
+    object-fit: cover;
 }
 
 .member-social-bookmark {
