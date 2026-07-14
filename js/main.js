@@ -104,13 +104,22 @@ jQuery(document).on('ready', function ($) {
     ------------------------------*/
     $(window).on("scroll", function () {
         var $totalHeight = $(window).scrollTop();
+        var $documentHeight = $(document).height() - $(window).height();
+        var scrollProgress = ($totalHeight / $documentHeight) * 100;
+        
         var $scrollToTop = $(".scrolltotop");
+        
+        if ($scrollToTop.length) {
+            $scrollToTop[0].style.setProperty('--scroll-progress', scrollProgress + '%');
+        }
+
         if ($totalHeight > 300) {
             $scrollToTop.fadeIn();
         } else {
             $scrollToTop.fadeOut();
         }
-        if ($totalHeight + $(window).height() === $(document).height()) {
+        
+        if ($totalHeight + $(window).height() >= $(document).height() - 10) {
             $scrollToTop.css("bottom", "90px");
         } else {
             $scrollToTop.css("bottom", "20px");
