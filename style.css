@@ -3000,18 +3000,19 @@ ul.blog-instagram-feed-widget li {
     }
 
     .menu-block-title span.menu-icon {
-        font-size: 10px !important;
+        font-size: 20px !important;
         color: #2e7d32 !important;
         /* Green */
-        margin-right: 6px !important;
+        margin-right: 10px !important;
         border: 1px solid #d0d0d0 !important;
         border-radius: 50% !important;
-        padding: 2px !important;
+        padding: 5px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        width: 16px !important;
-        height: 16px !important;
+        width: 38px !important;
+        height: 38px !important;
+        flex-shrink: 0 !important;
     }
 
     .menu-block-title span.menu-icon img {
@@ -3096,6 +3097,23 @@ ul.blog-instagram-feed-widget li {
 
     .custom-card.is-expanded::after {
         content: "HIDE MENU \f077" !important;
+    }
+
+    /* Fix mobile subpixel gap above and below section patterns according to facing by 1-2px */
+    .about-area::after,
+    .menus-area::after,
+    .team-area::after,
+    .booking-form-area::after,
+    .footer-area::after {
+        top: -5px !important;
+    }
+
+    .about-area::before,
+    .menus-area::before,
+    .booking-form-area::before,
+    .team-area::before,
+    .mainmenu-area::after {
+        bottom: -5px !important;
     }
 }
 
