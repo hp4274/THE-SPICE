@@ -30,7 +30,7 @@ Version: 2.0
 /*--------------------
    1. BASE CSS
 ----------------------*/
-@import url('https://fonts.googleapis.com/css?family=Dancing+Script:400,700|Lato:400,700|PT+Sans+Narrow:400,700');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700|PT+Sans+Narrow:400,700|Dancing+Script:400,700');
 
 :root {
     --theme-primary: #b73429;
@@ -260,6 +260,9 @@ input:-webkit-autofill:focus {
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
     z-index: 9999;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .is-sticky .mainmenu-area {
@@ -290,11 +293,12 @@ input:-webkit-autofill:focus {
 
 .navbar-brand {
     display: none;
+    padding: 0 15px;
+    margin-top: 5px;
 }
 
 .navbar-brand img {
     border-radius: 12px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
     height: 90px;
     width: auto;
 }
@@ -337,6 +341,7 @@ ul#nav li a {
     text-transform: uppercase;
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
+    position: relative;
 }
 
 ul#nav li.active a::before {
@@ -405,7 +410,7 @@ ul#nav li.active a {
 }
 
 .is-sticky .navbar-header {
-    margin-top: -7px;
+    margin-top: 0;
 }
 
 
@@ -460,8 +465,13 @@ a.home-reservation-button {
     color: #fff;
     display: inline-block;
     font-size: 13px;
-    margin-top: 15px;
+    margin: 15px 10px 0;
     padding: 10px 30px;
+}
+
+a.home-reservation-button[href="#booking"] {
+    background: #b73429;
+    border-color: #b73429;
 }
 
 .slider-area h3 a:hover,
@@ -1049,6 +1059,18 @@ a.read-more {
     width: 46px;
 }
 
+.menu-icon img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.menu-icon.non-veg-border {
+    background: rgba(211, 47, 47, 0.12) !important;
+    color: #d32f2f !important;
+    border: none !important;
+}
+
 .menu-block-title h3 {
     color: #334d2b;
     font-size: 42px;
@@ -1291,6 +1313,38 @@ a.reservation-button:hover {
     padding: 0 15px;
     font-size: 15px;
     outline: none;
+}
+
+.table-booking-form.redesigned-form input[type="time"] {
+    cursor: pointer;
+    color: #555;
+    font-family: inherit;
+    line-height: 50px;
+}
+
+.table-booking-form.redesigned-form input[type="number"] {
+    color: #555;
+    font-family: inherit;
+    line-height: 50px;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.table-booking-form.redesigned-form input[type="number"]::-webkit-outer-spin-button,
+.table-booking-form.redesigned-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.table-booking-form.redesigned-form input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    padding: 4px;
+}
+
+.table-booking-form.redesigned-form input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }
 
 .table-booking-form.redesigned-form select {
@@ -2371,7 +2425,7 @@ ul.blog-instagram-feed-widget li {
 }
 
 .welcome-text h1 {
-    font-size: 60px;
+    font-size: 42px;
     font-weight: 300;
     letter-spacing: 2px;
     margin-bottom: 25px;
@@ -2576,12 +2630,15 @@ ul.blog-instagram-feed-widget li {
     text-align: center;
     padding: 20px 0;
 }
+
 .res-title-wrapper {
     margin-bottom: 50px;
 }
+
 .res-ornament {
     margin-bottom: 10px;
 }
+
 .res-title {
     font-size: 46px;
     font-weight: 700;
@@ -2594,6 +2651,7 @@ ul.blog-instagram-feed-widget li {
     justify-content: center;
     gap: 20px;
 }
+
 .res-line-left,
 .res-line-right {
     height: 1px;
@@ -2601,6 +2659,7 @@ ul.blog-instagram-feed-widget li {
     background-color: #d1ab66;
     position: relative;
 }
+
 .res-line-left::after,
 .res-line-right::before {
     content: '';
@@ -2611,9 +2670,11 @@ ul.blog-instagram-feed-widget li {
     background-color: #d1ab66;
     border-radius: 50%;
 }
+
 .res-line-left::after {
     right: -10px;
 }
+
 .res-line-right::before {
     left: -10px;
 }
@@ -2623,11 +2684,13 @@ ul.blog-instagram-feed-widget li {
     color: #e0e0e0;
     font-weight: 300;
 }
+
 .res-features-grid {
     display: flex;
     justify-content: center;
     align-items: stretch;
 }
+
 .res-feature-item {
     display: flex;
     flex-direction: column;
@@ -2637,9 +2700,11 @@ ul.blog-instagram-feed-widget li {
     padding: 0 30px;
     transition: transform 0.3s;
 }
+
 .res-feature-item:hover {
     transform: translateY(-5px);
 }
+
 .res-icon-circle {
     width: 80px;
     height: 80px;
@@ -2651,17 +2716,21 @@ ul.blog-instagram-feed-widget li {
     margin-bottom: 20px;
     transition: all 0.3s;
 }
+
 .res-icon-circle i {
     font-size: 30px;
     color: #d1ab66;
     transition: color 0.3s;
 }
+
 .res-feature-item:hover .res-icon-circle {
     border-color: #d1ab66;
 }
+
 .res-feature-item:hover .res-icon-circle i {
     color: #b73429;
 }
+
 .res-feature-item h4 {
     font-size: 15px;
     font-weight: 600;
@@ -2670,15 +2739,18 @@ ul.blog-instagram-feed-widget li {
     margin: 0 0 10px;
     text-transform: uppercase;
 }
+
 .res-red-line {
     width: 30px;
     height: 2px;
     background-color: #b73429;
     transition: width 0.3s;
 }
+
 .res-feature-item:hover .res-red-line {
     width: 50px;
 }
+
 .res-vertical-separator {
     width: 1px;
     background-color: rgba(209, 171, 102, 0.3);
@@ -2688,6 +2760,7 @@ ul.blog-instagram-feed-widget li {
     position: relative;
     margin: 0 10px;
 }
+
 .res-vertical-separator i {
     color: #d1ab66;
     font-size: 8px;
@@ -2713,9 +2786,11 @@ ul.blog-instagram-feed-widget li {
         flex-wrap: wrap;
         gap: 30px;
     }
+
     .res-vertical-separator {
         display: none;
     }
+
     .res-title {
         font-size: 30px;
     }
@@ -2726,10 +2801,20 @@ ul.blog-instagram-feed-widget li {
     }
 
     /* Mobile Navbar Fixes */
-    .is-sticky .mainmenu-area, .mainmenu-area {
-        background: #ffffff !important;
+    .mainmenu-area {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
         border: none !important;
     }
+
+    .is-sticky .mainmenu-area {
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+    }
+
     .mainmenu-area::after {
         display: none !important;
     }
@@ -2742,25 +2827,30 @@ ul.blog-instagram-feed-widget li {
         padding: 18px 15px !important;
         border: none !important;
     }
+
     .navbar-header::before,
     .navbar-header::after {
         display: none !important;
     }
+
     .navbar-brand {
         order: 1 !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-    .desktop-logo { 
-        display: none !important; 
+
+    .desktop-logo {
+        display: none !important;
     }
-    .mobile-logo { 
-        display: block !important; 
-        background-color: #8B1D1D !important; /* Dark red */
-        padding: 10px 14px !important; 
-        border-radius: 8px !important; 
-        height: 65px !important; 
-        width: auto !important; 
+
+    .mobile-logo {
+        display: block !important;
+        background-color: #8B1D1D !important;
+        /* Dark red */
+        padding: 10px 14px !important;
+        border-radius: 8px !important;
+        height: 65px !important;
+        width: auto !important;
         object-fit: contain !important;
     }
 
@@ -2770,14 +2860,17 @@ ul.blog-instagram-feed-widget li {
         order: 2 !important;
         margin: 0 !important;
         float: none !important;
-        border: none !important; /* Remove border from burger */
+        border: none !important;
+        /* Remove border from burger */
         background: transparent !important;
         padding: 10px !important;
     }
+
     .navbar-header .navbar-toggle .icon-bar,
     .is-sticky .navbar-toggle .icon-bar,
     .navbar-toggle .icon-bar {
-        background-color: #d88c60 !important; /* copper color */
+        background-color: #d88c60 !important;
+        /* copper color */
         height: 3px !important;
         width: 32px !important;
         margin-top: 7px !important;
@@ -2789,10 +2882,12 @@ ul.blog-instagram-feed-widget li {
         height: 65vh !important;
         min-height: 550px !important;
     }
+
     .welcome-text-area {
         padding-top: 100px !important;
-        background: rgba(0,0,0,0.6) !important;
+        background: rgba(0, 0, 0, 0.6) !important;
     }
+
     .welcome-text h2 {
         font-family: "Dancing Script", cursive !important;
         font-size: 38px !important;
@@ -2802,7 +2897,7 @@ ul.blog-instagram-feed-widget li {
         font-weight: 400 !important;
         line-height: 1.2 !important;
     }
-    
+
     .welcome-text h1.cd-headline {
         font-family: 'Open Sans', sans-serif !important;
         font-size: 28px !important;
@@ -2812,11 +2907,24 @@ ul.blog-instagram-feed-widget li {
         color: #fff !important;
         margin-bottom: 20px !important;
     }
-    
-    .desktop-only-words, .desktop-hero-text, .desktop-hero-btn {
+
+    .desktop-hero-text {
         display: none !important;
     }
-    
+
+    .hero-text {
+        display: block !important;
+        margin-bottom: 5px !important;
+    }
+
+    .desktop-only-words {
+        /* Allow typing effect to show on mobile */
+        display: inline-block;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        color: #f1f1f1 !important;
+    }
+
     .mobile-hero-text {
         display: block !important;
         font-size: 14px !important;
@@ -2826,12 +2934,12 @@ ul.blog-instagram-feed-widget li {
         margin: 0 auto 30px !important;
         font-family: sans-serif !important;
     }
-    
+
     .welcome-text .home-reservation-button {
         display: block !important;
         width: 80% !important;
-        margin: 0 auto !important;
-        background: transparent !important;
+        margin: 0 auto 15px !important;
+        background: #b73429 !important;
         border: 1px solid #b73429 !important;
         color: #fff !important;
         border-radius: 6px !important;
@@ -2851,15 +2959,15 @@ ul.blog-instagram-feed-widget li {
         background: #fbfbfb !important;
         border-radius: 15px !important;
         padding: 8px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
         margin-bottom: 20px !important;
         height: auto !important;
     }
-    
+
     .custom-img-small-group {
         display: none !important;
     }
-    
+
     .custom-img-big {
         flex: 0 0 110px !important;
         height: 140px !important;
@@ -2867,7 +2975,7 @@ ul.blog-instagram-feed-widget li {
         border-radius: 12px !important;
         order: 1 !important;
     }
-    
+
     .custom-card {
         flex: 1 !important;
         min-width: 0 !important;
@@ -2878,11 +2986,11 @@ ul.blog-instagram-feed-widget li {
         order: 2 !important;
         overflow: hidden !important;
     }
-    
+
     .custom-card-divider {
         display: none !important;
     }
-    
+
     .menu-block-title {
         display: flex !important;
         align-items: center !important;
@@ -2890,10 +2998,11 @@ ul.blog-instagram-feed-widget li {
         border-bottom: 1px dashed #e0e0e0 !important;
         padding-bottom: 5px !important;
     }
-    
+
     .menu-block-title span.menu-icon {
         font-size: 10px !important;
-        color: #2e7d32 !important; /* Green */
+        color: #2e7d32 !important;
+        /* Green */
         margin-right: 6px !important;
         border: 1px solid #d0d0d0 !important;
         border-radius: 50% !important;
@@ -2904,15 +3013,27 @@ ul.blog-instagram-feed-widget li {
         width: 16px !important;
         height: 16px !important;
     }
-    
+
+    .menu-block-title span.menu-icon img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+    }
+
+    .menu-block-title span.menu-icon.non-veg-border {
+        background: rgba(211, 47, 47, 0.12) !important;
+        color: #d32f2f !important;
+        border: 1px solid rgba(211, 47, 47, 0.3) !important;
+    }
+
     .menu-block-title h3 {
         font-family: "Dancing Script", cursive !important;
-        font-size: 16px !important;
+        font-size: 26px !important;
         color: #333 !important;
         margin: 0 !important;
         font-weight: 600 !important;
     }
-    
+
     /* Bullet points instead of descriptions */
     .menu-item-list {
         display: flex !important;
@@ -2920,19 +3041,25 @@ ul.blog-instagram-feed-widget li {
         gap: 4px !important;
         margin-bottom: 10px !important;
     }
-    
+
     .menu-item p {
-        display: none !important; /* Hide description */
+        display: block !important;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        margin: 0 !important;
+        padding: 0 !important;
+        transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.4s ease, padding 0.4s ease;
     }
-    
+
     .menu-item h4 {
-        font-size: 11px !important;
+        font-size: 14px !important;
         color: #333 !important;
         margin: 0 !important;
         font-family: sans-serif !important;
-        font-weight: 600 !important;
+        font-weight: 800 !important;
     }
-    
+
     /* Modify the h4 text to look like a bullet point. */
     .menu-item h4::before {
         content: "\2022 " !important;
@@ -2941,11 +3068,39 @@ ul.blog-instagram-feed-widget li {
     }
 
     .custom-card::after {
-        content: "VIEW MENU";
+        content: "VIEW MENU \f078" !important;
+        font-family: "Font Awesome 6 Free", sans-serif !important;
+        font-weight: 900 !important;
         display: block;
         color: #b73429;
         font-size: 9px;
-        font-weight: 800;
         letter-spacing: 1px;
     }
+
+    /* Expandable Mobile Menu */
+    .custom-card {
+        cursor: pointer !important;
+    }
+
+    .custom-card.is-expanded .menu-item p {
+        max-height: 300px;
+        opacity: 1;
+        font-size: 11px !important;
+        color: #666 !important;
+        margin-top: 4px !important;
+        margin-bottom: 8px !important;
+        line-height: 1.4 !important;
+        padding-left: 10px !important;
+        font-style: italic !important;
+    }
+
+    .custom-card.is-expanded::after {
+        content: "HIDE MENU \f077" !important;
+    }
+}
+
+/* Force solid icons to look hollow using text-stroke */
+.hollow-icon-trick {
+    -webkit-text-stroke: 1.5px #b73429 !important;
+    color: transparent !important;
 }

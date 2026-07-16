@@ -590,9 +590,39 @@
         margin-top: 40px;
     }
     .package-price {
-  left: 0;
-  top: 0;
-}
+        left: 0;
+        top: 0;
+    }
+
+    /* CUSTOM MOBILE NAVBAR OVERRIDES */
+    .navbar-toggle {
+        display: none !important;
+    }
+    .navbar-collapse,
+    .navbar-collapse.collapse.in {
+        display: none !important;
+    }
+    .mainmenu-area,
+    .is-sticky .mainmenu-area {
+        background: transparent !important;
+        position: static !important;
+        box-shadow: none !important;
+    }
+    .sticky-wrapper,
+    .is-sticky .sticky-wrapper {
+        height: auto !important;
+    }
+    .navbar-header,
+    .is-sticky .navbar-header {
+        border-bottom: none !important;
+        background: transparent !important;
+    }
+    .is-sticky .navbar-brand.white {
+        display: block !important;
+    }
+    .is-sticky .navbar-brand {
+        display: none !important;
+    }
 }
 
 

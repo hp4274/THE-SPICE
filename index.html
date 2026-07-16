@@ -74,123 +74,6 @@
             style="background-size:cover; background-position:center; opacity:0;">
         </div>
         <div class="header-top-area">
-            <div class="top-bar">
-                <div class="container">
-                    <style>
-                        .custom-top-bar-layout {
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            flex-wrap: wrap;
-                        }
-
-                        .custom-top-bar-left {
-                            display: flex;
-                            align-items: center;
-                        }
-
-                        .custom-top-bar-left .book-table-popup a {
-                            display: inline-block;
-                            padding: 15px 30px;
-                            background: var(--theme-primary, #b73429);
-                            color: #fff;
-                            font-size: 12px;
-                            font-weight: 700;
-                            letter-spacing: 2px;
-                            text-transform: uppercase;
-                            text-decoration: none;
-                        }
-
-                        .custom-top-bar-left .call-to-action {
-                            display: flex;
-                            align-items: center;
-                            margin-left: 30px;
-                            gap: 20px;
-                        }
-
-                        .custom-top-bar-left .call-to-action p {
-                            margin: 0;
-                            color: #fff;
-                            display: flex;
-                            align-items: center;
-                            text-transform: none;
-                            /* To keep email lowercase/mixed case */
-                        }
-
-                        .custom-top-bar-left .call-to-action p i {
-                            margin-right: 8px;
-                            font-size: 14px;
-                        }
-
-                        .custom-top-bar-right .top-social-bookmark ul {
-                            display: flex;
-                            gap: 5px;
-                            margin: 0;
-                            padding: 0;
-                            list-style: none;
-                        }
-
-                        .custom-top-bar-right .top-social-bookmark ul li a {
-                            color: #fff;
-                            padding: 5px 10px;
-                            font-size: 14px;
-                        }
-
-                        .custom-top-bar-right .top-social-bookmark ul li a:hover {
-                            color: var(--theme-primary, #b73429);
-                        }
-
-                        @media (max-width: 991px) {
-                            .custom-top-bar-left .call-to-action {
-                                margin-left: 15px;
-                                flex-wrap: wrap;
-                                gap: 10px;
-                            }
-                        }
-
-                        @media (max-width: 767px) {
-                            .custom-top-bar-layout {
-                                flex-direction: column;
-                                align-items: flex-start;
-                                gap: 10px;
-                                padding: 10px 0;
-                            }
-
-                            .custom-top-bar-left {
-                                flex-direction: column;
-                                align-items: flex-start;
-                                gap: 10px;
-                            }
-
-                            .custom-top-bar-left .call-to-action {
-                                margin-left: 0;
-                            }
-                        }
-                    </style>
-                    <div class="custom-top-bar-layout">
-                        <div class="custom-top-bar-left">
-                            <div class="call-to-action">
-                                <p><i class="fa-regular fa-envelope"></i>Email: <a
-                                        href="mailto:hello@thespiceblackpool.co.uk"
-                                        style="color:#fff; margin-left:5px;">hello@thespiceblackpool.co.uk</a></p>
-                                <p><i class="fa fa-phone"></i>Telephone: <a href="tel:+441253623320"
-                                        style="color:#fff; margin-left:5px;">01253 623320</a></p>
-                            </div>
-                        </div>
-                        <div class="custom-top-bar-right">
-                            <div class="top-social-bookmark">
-                                <ul>
-                                    <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
-                                    <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fa-solid fa-globe"></i></a></li>
-                                    <li><a href="#"><i class="fa-brands fa-behance"></i></a></li>
-                                    <li><a href="#"><i class="fa-solid fa-rss"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!--MAINMENU AREA-->
             <div class="mainmenu-area" id="mainmenu-area">
@@ -215,15 +98,7 @@
                             </a>
                         </div>
                         <div class="collapse navbar-collapse bs-example-js-navbar-scrollspy">
-                            <div class="search-form-area">
-                                <div class="search-form-overlay"></div>
-                                <a class="search-form-trigger" href="#search-form">Search<span></span></a>
-                                <div id="search-form" class="search-form">
-                                    <form>
-                                        <input type="search" placeholder="Search...">
-                                    </form>
-                                </div>
-                            </div>
+
                             <ul id="nav" class="nav navbar-nav">
                                 <li class="active"><a href="#home">Home</a> </li>
                                 <li><a href="#about">About</a></li>
@@ -254,9 +129,11 @@
                                     <b>Sea-view Dining</b>
                                 </span>
                             </h1>
-                            <p class="desktop-hero-text">Discover a delicious all-you-can-eat Indian buffet prepared with fresh ingredients,
+                            <p class="desktop-hero-text">Discover a delicious all-you-can-eat Indian buffet prepared
+                                with fresh ingredients,
                                 authentic spices, and traditional recipes in our elegant seafront restaurant.</p>
-                            <p class="mobile-hero-text">Discover a blend of rich spices and timeless recipes in every bite.</p>
+                            <p class="mobile-hero-text">Discover a blend of rich spices and timeless recipes in every
+                                bite.</p>
                             <a class="home-reservation-button" href="#booking">Book a Table</a>
                             <a class="home-reservation-button desktop-hero-btn" href="#menu">View Menu</a>
                         </div>
@@ -364,7 +241,7 @@
             <div class="row">
                 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                     <div class="area-title text-center">
-                        <h2>Menu</h2>
+                        <h2>Buffet</h2>
                     </div>
                 </div>
             </div>
@@ -484,6 +361,30 @@
                         color: #fff;
                     }
 
+                    @media (max-width: 767px) {
+                        .custom-pricing-inner {
+                            padding: 30px 20px;
+                        }
+
+                        .pricing-divider-top {
+                            margin-bottom: 20px;
+                        }
+
+                        .custom-pricing-inner h3 {
+                            font-size: 24px;
+                            margin: 0 0 15px 0;
+                        }
+
+                        .pricing-divider-middle {
+                            margin-bottom: 20px;
+                        }
+
+                        .custom-pricing-inner p {
+                            font-size: 14px;
+                            margin-bottom: 25px;
+                        }
+                    }
+
                     /* Menu CSS */
                     .custom-menu-showcase {
                         width: 100vw;
@@ -580,6 +481,20 @@
                         flex-shrink: 0;
                     }
 
+                    .custom-card .menu-icon img {
+                        width: 38px;
+                        height: 38px;
+                        object-fit: contain;
+                    }
+
+                    .custom-card .menu-icon.non-veg-border {
+                        background: rgba(211, 47, 47, 0.12) !important;
+                        color: #d32f2f !important;
+                        border: none !important;
+                    }
+
+
+
                     .custom-card h3 {
                         font-family: "Dancing Script", cursive;
                         font-size: 40px;
@@ -650,10 +565,11 @@
                     }
 
                     .menu-item h4 {
-                        font-size: 18px;
+                        font-size: 20px;
+                        font-weight: bold;
                         color: #1e3a2b;
                         margin: 0;
-                        font-weight: 700;
+                        font-family: 'PT Sans Narrow', sans-serif;
                         text-transform: capitalize;
                     }
 
@@ -740,7 +656,8 @@
                     </div>
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa-solid fa-seedling"></i></span>
+                            <span class="menu-icon"><img src="img/menu/accompaniments.svg" alt="Accompaniments"
+                                    style="width: 38px; height: 38px;"></span>
                             <h3>Accompaniments</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -777,7 +694,8 @@
                 <article class="custom-menu-row starters mix">
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa-solid fa-leaf"></i></span>
+                            <span class="menu-icon"><img src="img/menu/veg-starter.svg" alt="Veg Starters"
+                                    style="width: 38px; height: 38px;"></span>
                             <h3>Veg Starters</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -832,7 +750,8 @@
                     </div>
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa-solid fa-drumstick-bite"></i></span>
+                            <span class="menu-icon non-veg-border"><img src="img/menu/non-veg-starters.svg"
+                                    alt="Non-Veg Starters" style="width: 38px; height: 38px;"></span>
                             <h3>Non-Veg Starters</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -871,7 +790,7 @@
                 <article class="custom-menu-row mains mix">
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa-solid fa-bowl-food"></i></span>
+                            <span class="menu-icon"><img src="img/menu/veg-main.svg" alt="Veg Mains" style="width: 38px; height: 38px;"></span>
                             <h3>Veg Mains</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -925,7 +844,7 @@
                     </div>
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa fa-kitchen-set"></i></span>
+                            <span class="menu-icon non-veg-border"><img src="img/menu/non-veg-main.svg" alt="Non-Veg Mains" style="width: 38px; height: 38px;"></span>
                             <h3>Non-Veg Mains</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -962,7 +881,7 @@
                 <article class="custom-menu-row mains mix">
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa-solid fa-wheat-awn"></i></span>
+                            <span class="menu-icon"><img src="img/menu/bread-and-rice.svg" alt="Bread &amp; Rice" style="width: 38px; height: 38px;"></span>
                             <h3>Bread &amp; Rice</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -1008,7 +927,7 @@
                     </div>
                     <div class="custom-card">
                         <div class="menu-block-title">
-                            <span class="menu-icon"><i class="fa-solid fa-ice-cream"></i></span>
+                            <span class="menu-icon"><img src="img/menu/ice-cream.svg" alt="Desserts &amp; Ice Cream" style="width: 38px; height: 38px;"></span>
                             <h3>Desserts &amp; Ice Cream</h3>
                         </div>
                         <div class="custom-card-divider">
@@ -1064,9 +983,10 @@
                                 BOOK YOUR TABLE
                                 <span class="res-line-right"></span>
                             </h2>
-                            <p class="res-subtitle">Reserve online, call us directly, or message us on WhatsApp for a quick booking.</p>
+                            <p class="res-subtitle">Reserve online, call us directly, or message us on WhatsApp for a
+                                quick booking.</p>
                         </div>
-                        
+
                         <div class="res-features-grid">
                             <!-- Item 1 -->
                             <a href="#booking" class="res-feature-item">
@@ -1076,11 +996,11 @@
                                 <h4>BOOK NOW</h4>
                                 <div class="res-red-line"></div>
                             </a>
-                            
+
                             <div class="res-vertical-separator">
                                 <i class="fa-solid fa-diamond"></i>
                             </div>
-                            
+
                             <!-- Item 2 -->
                             <a href="tel:+441253623320" class="res-feature-item">
                                 <div class="res-icon-circle">
@@ -1089,26 +1009,28 @@
                                 <h4>CALL NOW</h4>
                                 <div class="res-red-line"></div>
                             </a>
-                            
+
                             <div class="res-vertical-separator">
                                 <i class="fa-solid fa-diamond"></i>
                             </div>
-                            
+
                             <!-- Item 3 -->
-                            <a href="https://wa.me/447438231452" class="res-feature-item" target="_blank" rel="noopener">
+                            <a href="https://wa.me/447438231452" class="res-feature-item" target="_blank"
+                                rel="noopener">
                                 <div class="res-icon-circle">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </div>
                                 <h4>WHATSAPP</h4>
                                 <div class="res-red-line"></div>
                             </a>
-                            
+
                             <div class="res-vertical-separator">
                                 <i class="fa-solid fa-diamond"></i>
                             </div>
-                            
+
                             <!-- Item 4 -->
-                            <a href="https://maps.app.goo.gl/qqzcjV2C9MtjaWAYA" class="res-feature-item" target="_blank" rel="noopener">
+                            <a href="https://maps.app.goo.gl/oUgke86wSxiHi9FW8" class="res-feature-item" target="_blank"
+                                rel="noopener">
                                 <div class="res-icon-circle">
                                     <i class="fa-solid fa-location-dot"></i>
                                 </div>
@@ -1340,63 +1262,58 @@
                             <div class="row">
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
                                     <div class="form-field-wrapper">
-                                        <div class="icon-box"><i class="fa fa-user"></i></div>
+                                        <div class="icon-box"><i class="fa-regular fa-user"></i></div>
                                         <input type="text" name="name" id="inline-name" placeholder="Full Name"
                                             required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
                                     <div class="form-field-wrapper">
-                                        <div class="icon-box"><i class="fa fa-envelope"></i></div>
+                                        <div class="icon-box"><i class="fa-regular fa-envelope"></i></div>
                                         <input type="email" name="email" id="inline-email" placeholder="Email Address"
                                             required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
                                     <div class="form-field-wrapper">
-                                        <div class="icon-box"><i class="fa fa-phone"></i></div>
+                                        <div class="icon-box"><i class="fa-solid fa-phone"
+                                                style="-webkit-text-stroke: 1px var(--theme-primary); color: transparent !important;"></i>
+                                        </div>
                                         <input type="text" name="mobile" id="inline-mobile" placeholder="Phone Number"
                                             required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
                                     <div class="form-field-wrapper">
-                                        <div class="icon-box"><i class="fa fa-calendar"></i></div>
+                                        <div class="icon-box"><i class="fa-regular fa-calendar"></i></div>
                                         <input type="text" name="date" id="inline-date" data-select="datepicker"
                                             placeholder="Date" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
                                     <div class="form-field-wrapper">
-                                        <div class="icon-box"><i class="fa-solid fa-clock"></i></div>
-                                        <input type="text" id="inline-time" name="time" placeholder="Time" required>
+                                        <div class="icon-box"><i class="fa-regular fa-clock"></i></div>
+                                        <input type="time" id="inline-time" name="time" placeholder="Time" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
                                     <div class="form-field-wrapper">
-                                        <div class="icon-box"><i class="fa fa-users"></i></div>
-                                        <select name="person" id="inline-person">
-                                            <option value="1">1 Guest</option>
-                                            <option value="2">2 Guests</option>
-                                            <option value="3">3 Guests</option>
-                                            <option value="4">4 Guests</option>
-                                            <option value="5">5 Guests</option>
-                                            <option value="6">6 Guests</option>
-                                            <option value="7">7 Guests</option>
-                                            <option value="8">8 Guests</option>
-                                        </select>
+                                        <div class="icon-box"><i class="fa-solid fa-users"
+                                                style="-webkit-text-stroke: 1px var(--theme-primary); color: transparent !important;"></i>
+                                        </div>
+                                        <input type="number" name="person" id="inline-person" placeholder="Number of Guests" min="1" max="50" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
                                     <div class="form-field-wrapper textarea-wrapper">
-                                        <div class="icon-box"><i class="fa-solid fa-comment"></i></div>
+                                        <div class="icon-box"><i class="fa-regular fa-comment"></i></div>
                                         <textarea name="requests" id="inline-requests" rows="3"
                                             placeholder="Special Requests (Optional)"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 text-center">
                                     <button type="submit" class="full-width-btn">BOOK A TABLE <i
-                                            class="fa fa-arrow-right"></i></button>
+                                            class="fa-solid fa-arrow-right"></i></button>
                                 </div>
                             </div>
                         </form>
@@ -1420,7 +1337,7 @@
                             <a href="#"><img src="img/logo-text.png" alt="The Spice logo"></a>
                         </div>
                         <div class="footer-address">
-                            <p><a href="https://maps.app.goo.gl/qqzcjV2C9MtjaWAYA" target="_blank" rel="noopener">The
+                            <p><a href="https://maps.app.goo.gl/oUgke86wSxiHi9FW8" target="_blank" rel="noopener">The
                                     Strand Hotel, 326–328 Promenade, Blackpool, FY1 2JG, United Kingdom</a></p>
                             <p><a href="mailto:hello@thespiceblackpool.co.uk">hello@thespiceblackpool.co.uk</a></p>
                             <p><a href="tel:+441253623320">01253 623320</a> | <a href="https://wa.me/447438231452"

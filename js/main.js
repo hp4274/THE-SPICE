@@ -173,7 +173,7 @@ jQuery(document).on('ready', function ($) {
         loop: true,
         nav: false,
         navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-        autoplay: false,
+        autoplay: $(window).width() <= 767,
         autoplayTimeout: 2000,
         margin: 15,
         responsiveClass: true,
@@ -339,6 +339,14 @@ jQuery(document).on('ready', function ($) {
     ----------------------------*/
     new WOW().init();
     
+    /*---------------------------
+        MOBILE MENU ACCORDION
+    -----------------------------*/
+    $('.custom-card').on('click', function() {
+        if ($(window).width() <= 767) {
+            $(this).toggleClass('is-expanded');
+        }
+    });
 
 }(jQuery));
 
