@@ -164,10 +164,10 @@
     }
     .is-sticky .navbar-header .collapse,
     .is-sticky .navbar-toggle {
-        border: 2px solid #1a1a1a;
+        border: 2px solid #ffffff !important;
     }
     .is-sticky .navbar-toggle .icon-bar {
-        background: #1a1a1a none repeat scroll 0 0;
+        background: #ffffff !important;
     }
     .navbar-header {
         float: none;
@@ -602,11 +602,19 @@
     .navbar-collapse.collapse.in {
         display: none !important;
     }
-    .mainmenu-area,
-    .is-sticky .mainmenu-area {
+    .mainmenu-area {
         background: transparent !important;
         position: static !important;
         box-shadow: none !important;
+    }
+    .is-sticky .mainmenu-area {
+        background: #8c1c13 !important;
+        position: fixed !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        width: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 99999 !important;
     }
     .sticky-wrapper,
     .is-sticky .sticky-wrapper {

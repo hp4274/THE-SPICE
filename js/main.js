@@ -6,16 +6,18 @@ jQuery(document).on('ready', function ($) {
     ---------------------------*/
     $('body').scrollspy({
         target: '.bs-example-js-navbar-scrollspy',
-        offset: 50
+        offset: 95
     });
 
 
     /*--------------------------
         STICKY MAINMENU
     ---------------------------*/
-    $("#mainmenu-area").sticky({
-        topSpacing: 0
-    });
+    if ($(window).width() > 767) {
+        $("#mainmenu-area").sticky({
+            topSpacing: 0
+        });
+    }
 
 
     /*-----------------------------
@@ -90,7 +92,7 @@ jQuery(document).on('ready', function ($) {
     -----------------------------*/
     $('a.scrolltotop, .slider-area h3 a, .navbar-header a, ul#nav a').on('click', function (event) {
         var id = $(this).attr("href");
-        var offset = 40;
+        var offset = 90;
         var target = $(id).offset().top - offset;
         $('html, body').animate({
             scrollTop: target
