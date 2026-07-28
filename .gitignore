@@ -20,7 +20,7 @@ config/secrets.json
 !admin/server/.env.example
 
 # Database Dumps & Backups
-*.sql
+
 *.sqlite
 admin/backups/
 admin/backup/
