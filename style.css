@@ -3495,3 +3495,569 @@ ul.blog-instagram-feed-widget li {
     box-shadow: none !important;
     text-shadow: none !important;
 }
+
+/* Remove Spinner Arrows from Number Inputs */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none !important; 
+    margin: 0 !important; 
+}
+input[type=number] {
+    -moz-appearance: textfield !important;
+}
+
+/* Samsung Alarm Clock Circular Time Picker Modal */
+.samsung-clock-picker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease-in-out;
+}
+
+.samsung-clock-picker-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.samsung-clock-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+    width: 320px;
+    padding: 24px 20px 20px;
+    text-align: center;
+    position: relative;
+    transform: scale(0.92);
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.samsung-clock-picker-overlay.active .samsung-clock-card {
+    transform: scale(1);
+}
+
+.samsung-clock-header {
+    background: #b73429;
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 14px 10px;
+    margin-bottom: 18px;
+    position: relative;
+}
+
+.samsung-clock-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    font-size: 16px;
+    color: #ffffff;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+    z-index: 20;
+}
+
+.samsung-clock-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.samsung-clock-time-display {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1.1;
+}
+
+.samsung-clock-step-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.85;
+    margin-top: 4px;
+    font-weight: 700;
+}
+
+/* AM/PM Toggle */
+.samsung-ampm-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.samsung-ampm-toggle .ampm-btn {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.samsung-ampm-toggle .ampm-btn.active {
+    background: #b73429;
+    color: #ffffff;
+    border-color: #b73429;
+}
+
+/* Circular Clock Face Dial */
+.samsung-clock-dial {
+    position: relative;
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    margin: 0 auto;
+}
+
+.samsung-clock-center-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #b73429;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.samsung-clock-tick {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.samsung-clock-tick:hover,
+.samsung-clock-tick.active {
+    background: #b73429 !important;
+    color: #ffffff !important;
+    transform: scale(1.15);
+}
+
+/* Step 2 Minute Buttons */
+.samsung-minute-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 10px 0 16px;
+}
+
+.samsung-minute-btn {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.samsung-minute-btn:hover {
+    border-color: #b73429;
+    background: #fdf2f2;
+    color: #b73429;
+    transform: translateY(-2px);
+}
+
+.samsung-back-btn {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #475569 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    padding: 8px 20px !important;
+    border-radius: 20px !important;
+    transition: all 0.2s ease !important;
+    margin-top: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    outline: none !important;
+}
+
+.samsung-back-btn:hover {
+    background: #b73429 !important;
+    color: #ffffff !important;
+    border-color: #b73429 !important;
+}
+
+/* Animated Green Success State for Book A Table Button */
+.book-table-submit-btn.btn-success-booked {
+    background: #16a34a !important;
+    border-color: #16a34a !important;
+    color: #ffffff !important;
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(22, 163, 74, 0.45) !important;
+    animation: btnSuccessPulse 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.book-table-submit-btn.btn-success-booked .btn-left-icon,
+.book-table-submit-btn.btn-success-booked .btn-right-arrow {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.book-table-submit-btn.btn-success-booked i {
+    color: #ffffff !important;
+    background: transparent !important;
+    text-shadow: none !important;
+}
+
+@keyframes btnSuccessPulse {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.08);
+    }
+    70% {
+        transform: scale(0.97);
+    }
+    100% {
+        transform: scale(1.02);
+    }
+}
+
+/* Floating Booking Success Toast Card */
+.booking-success-toast {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-120px);
+    background: #16a34a;
+    color: #ffffff;
+    padding: 16px 28px;
+    border-radius: 50px;
+    box-shadow: 0 15px 35px rgba(22, 163, 74, 0.4) !important;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.booking-success-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-check-icon {
+    font-size: 30px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast-text-content {
+    text-align: left;
+}
+
+.toast-title {
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.toast-sub {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+/* Premium Red & White Glassmorphism Preloader */
+.preeloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 9999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.preeloader.dismissed,
+.preeloader.preloader-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.preloader-icon-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.preloader-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(183, 52, 41, 0.15);
+    border-top: 3px solid #b73429;
+    border-radius: 50%;
+    animation: preloaderSpin 0.9s linear infinite;
+}
+
+.preloader-center-icon {
+    font-size: 28px;
+    color: #b73429;
+    animation: preloaderPulse 1.4s ease-in-out infinite;
+}
+
+.preloader-brand-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.preloader-brand-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #b73429;
+    opacity: 0.9;
+    text-transform: uppercase;
+}
+
+@keyframes preloaderSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes preloaderPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.85); opacity: 0.7; }
+}
+
+/* ==========================================
+   WHY GUESTS LOVE THE SPICE & GALLERY STYLES
+   ========================================== */
+
+/* Why Guests Love The Spice Section (Exact Match to Design) */
+.team-area {
+    position: relative;
+    background: #ffffff !important;
+    padding: 70px 0 90px;
+}
+
+.why-guests-title {
+    font-family: 'Dancing Script', cursive !important;
+    font-size: 52px !important;
+    color: #b73429 !important;
+    font-weight: 700 !important;
+    text-transform: capitalize !important;
+    margin: 0 0 10px !important;
+    letter-spacing: 0 !important;
+}
+
+.why-guests-flourish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+.why-guests-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 22px !important;
+    width: 100% !important;
+    margin-top: 25px !important;
+}
+
+@media (max-width: 991px) {
+    .why-guests-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .why-guests-grid {
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: 32px !important;
+    }
+}
+
+.why-guests-card {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+}
+
+.why-guests-img-box {
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    margin: 0 0 16px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.why-guests-img-box img {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 0 !important;
+}
+
+.why-guests-card h3 {
+    font-family: 'PT Sans', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #555555 !important;
+    margin-top: 14px !important;
+    margin-bottom: 8px !important;
+    letter-spacing: 0.2px !important;
+    text-transform: capitalize !important;
+}
+
+.why-guests-card p {
+    font-family: 'PT Sans', sans-serif !important;
+    font-size: 13.5px !important;
+    color: #777777 !important;
+    line-height: 1.5 !important;
+    margin: 0 auto !important;
+    max-width: 220px !important;
+}
+
+/* Gallery Section & Infinite Auto-Sliding Row (Hover to Pause) */
+.gallery-area {
+    background: #0b0f19 !important;
+    padding: 70px 0 90px !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.gallery-slider-wrapper {
+    width: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    padding: 10px 0 !important;
+}
+
+.gallery-slider-track {
+    display: flex !important;
+    gap: 20px !important;
+    width: max-content !important;
+    animation: galleryMarquee 28s linear infinite !important;
+    will-change: transform;
+}
+
+/* PAUSE SLIDING ON HOVER */
+.gallery-slider-wrapper:hover .gallery-slider-track {
+    animation-play-state: paused !important;
+}
+
+@keyframes galleryMarquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-50% - 10px));
+    }
+}
+
+.gallery-item-card {
+    flex: 0 0 320px !important;
+    width: 320px !important;
+    height: 240px !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    background: #1e293b !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+    transition: transform 0.3s ease, border-color 0.3s ease !important;
+}
+
+.gallery-item-card:hover {
+    border-color: #b73429 !important;
+    transform: translateY(-4px) !important;
+}
+
+.gallery-item-card img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 12px !important;
+}

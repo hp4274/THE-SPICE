@@ -167,20 +167,20 @@
     background: #D6EAFF;
 }
 
-.datepicker .cell.day:hover,
-.datepicker .cell.month:hover,
-.datepicker .cell.year:hover,
-.datepicker .cell.decade:hover {
-    background: rgba(var(--theme-primary-rgb), .8);
-    color: #FFF;
+.datepicker .cell.day:not(.disabled):hover,
+.datepicker .cell.month:not(.disabled):hover,
+.datepicker .cell.year:not(.disabled):hover,
+.datepicker .cell.decade:not(.disabled):hover {
+    background: #b73429 !important;
+    color: #ffffff !important;
 }
 
-.home-three .datepicker .cell.day:hover,
-.home-three .datepicker .cell.month:hover,
-.home-three .datepicker .cell.year:hover,
-.home-three .datepicker .cell.decade:hover {
-    background: rgba(var(--theme-primary-rgb), .8);
-    color: #FFF;
+.home-three .datepicker .cell.day:not(.disabled):hover,
+.home-three .datepicker .cell.month:not(.disabled):hover,
+.home-three .datepicker .cell.year:not(.disabled):hover,
+.home-three .datepicker .cell.decade:not(.disabled):hover {
+    background: #b73429 !important;
+    color: #ffffff !important;
 }
 
 .datepicker .cell.blank,
@@ -194,8 +194,8 @@
 .datepicker .cell.month.selected,
 .datepicker .cell.year.selected,
 .datepicker .cell.decade.selected {
-    background: var(--theme-primary) none repeat scroll 0 0;
-    color: #FFF;
+    background: #b73429 !important;
+    color: #ffffff !important;
 }
 
 .home-three .datepicker .cell.day.selected,
@@ -208,6 +208,16 @@
 
 .datepicker .cell.grayed {
     color: #CCC;
+}
+
+.datepicker .cell.day.disabled,
+.datepicker .cell.day.disabled:hover {
+    color: #CCC !important;
+    background: #FAFAFA !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    opacity: 0.3 !important;
+    text-decoration: line-through !important;
 }
 
 .datepicker .days .cell {

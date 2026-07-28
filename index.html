@@ -36,9 +36,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/v4-shims.min.css"
-        integrity="sha512-Kndk//rKMB3K5c44Z3J0y6vTzM/R1oH4W/xQzXfJ6P4/Q8o7F+U/c6x48h5H+E2V7k+sU9/u+943Bq+rPj+kQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/v4-shims.min.css" />
 
     <!--====== MAIN STYLESHEETS ======-->
     <link href="style.css?v=3" rel="stylesheet">
@@ -58,9 +56,38 @@
     <![endif]-->
 
     <!--- PRELOADER -->
-    <div class="preeloader">
-        <div class="preloader-spinner"><i class="fa fa-cutlery"></i></div>
+    <div class="preeloader" id="app-preloader">
+        <div class="preloader-content">
+            <div class="preloader-icon-wrapper">
+                <div class="preloader-ring"></div>
+                <div class="preloader-center-icon"><i class="fa-solid fa-utensils"></i></div>
+            </div>
+            <div class="preloader-brand-title">THE SPICE</div>
+            <div class="preloader-brand-sub">LUXURY BUFFET & DINING</div>
+        </div>
     </div>
+    <script>
+        (function () {
+            function dismissPreloader() {
+                var el = document.getElementById('app-preloader') || document.querySelector('.preeloader');
+                if (el && !el.classList.contains('dismissed')) {
+                    el.classList.add('dismissed');
+                    el.style.opacity = '0';
+                    el.style.pointerEvents = 'none';
+                    setTimeout(function () {
+                        if (el && el.parentNode) { el.parentNode.removeChild(el); }
+                    }, 400);
+                }
+            }
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                setTimeout(dismissPreloader, 100);
+            } else {
+                document.addEventListener('DOMContentLoaded', function () { setTimeout(dismissPreloader, 100); });
+                window.addEventListener('load', function () { setTimeout(dismissPreloader, 50); });
+            }
+            setTimeout(dismissPreloader, 400);
+        })();
+    </script>
 
     <!--SCROLL TO TOP-->
     <a href="#home" class="scrolltotop"><i class="fa fa-long-arrow-up"></i></a>
@@ -104,7 +131,7 @@
                                 <li><a href="#about">About</a></li>
                                 <li><a href="#menu">Buffet</a></li>
                                 <li><a href="#booking">Book Table</a></li>
-                                <li><a href="#contact">Contact</a></li>
+                                <li><a href="#footer-details">Contact</a>
                             </ul>
                         </div>
                     </div>
@@ -291,7 +318,7 @@
                         <div class="line"></div>
                     </div>
                     <p class="pricing-desc">Great value for younger<br>guests under 10 years old.</p>
-                    <a href="#contact" class="pricing-btn">FIND OUT MORE</a>
+                    <a href="#booking" class="pricing-btn">BOOK NOW</a>
                 </div>
                 <div class="pricing-card-exact">
                     <div class="pricing-badge-circle">
@@ -479,6 +506,14 @@
                             padding: 35px 20px 30px;
                             margin-top: 45px;
                             min-width: 100%;
+                        }
+
+                        .pricing-badge-circle::before {
+                            left: -14px;
+                        }
+
+                        .pricing-badge-circle::after {
+                            right: -14px;
                         }
 
                         .pricing-desc br {
@@ -1158,61 +1193,54 @@
     </section>
     <!--RESERVATION BUTTON AREA END-->
 
-    <!--TEAM AREA-->
+    <!--TEAM AREA (Why Guests Love The Spice)-->
     <section class="team-area section-padding" id="team">
         <div class="container wow fadeIn">
             <div class="row">
                 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-                    <div class="area-title text-center">
-                        <h2>Why Guests Love The Spice</h2>
+                    <div class="area-title text-center" style="margin-bottom: 40px;">
+                        <h2 class="why-guests-title">Why Guests Love The Spice</h2>
+
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 team-slider">
-                    <div class="single-team-member text-center">
-                        <div class="team-member-img ">
-                            <img src="img/team/team-1.jpg" alt="">
-                        </div>
-                        <div class="member-details">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                    <div class="why-guests-grid">
+                        <div class="why-guests-card text-center">
+                            <div class="why-guests-img-box">
+                                <img src="img/team/team-1.jpg" alt="Fresh Ingredients">
+                            </div>
                             <h3>Fresh Ingredients</h3>
                             <p>Every dish is prepared with fresh produce, fragrant herbs, and authentic spices.</p>
                         </div>
-                    </div>
-                    <div class="single-team-member text-center">
-                        <div class="team-member-img ">
-                            <img src="img/team/team-2.jpg" alt="">
-                        </div>
-                        <div class="member-details">
+                        <div class="why-guests-card text-center">
+                            <div class="why-guests-img-box">
+                                <img src="img/team/team-2.jpg" alt="Sea-View Dining">
+                            </div>
                             <h3>Sea-View Dining</h3>
                             <p>Enjoy a relaxed meal inside The Strand Hotel with beautiful views of the promenade.</p>
                         </div>
-                    </div>
-                    <div class="single-team-member text-center">
-                        <div class="team-member-img ">
-                            <img src="img/team/team-3.jpg" alt="">
-                        </div>
-                        <div class="member-details">
+                        <div class="why-guests-card text-center">
+                            <div class="why-guests-img-box">
+                                <img src="img/team/team-3.jpg" alt="Family Friendly">
+                            </div>
                             <h3>Family Friendly</h3>
                             <p>Our buffet makes it easy for families and friends to dine together and enjoy more choice.
                             </p>
                         </div>
-                    </div>
-                    <div class="single-team-member text-center">
-                        <div class="team-member-img ">
-                            <img src="img/team/team-4.jpg" alt="">
-                        </div>
-                        <div class="member-details">
+                        <div class="why-guests-card text-center">
+                            <div class="why-guests-img-box">
+                                <img src="img/team/team-4.jpg" alt="Traditional Recipes">
+                            </div>
                             <h3>Traditional Recipes</h3>
                             <p>Classic Indian favourites are cooked with care and served with restaurant-quality
                                 consistency.</p>
                         </div>
-                    </div>
-                    <div class="single-team-member text-center">
-                        <div class="team-member-img ">
-                            <img src="img/team/team-5.jpg" alt="">
-                        </div>
-                        <div class="member-details">
+                        <div class="why-guests-card text-center">
+                            <div class="why-guests-img-box">
+                                <img src="img/team/team-5.jpg" alt="Elegant Atmosphere">
+                            </div>
                             <h3>Elegant Atmosphere</h3>
                             <p>A calm, seafront setting that works for date nights, celebrations, and casual dinners
                                 alike.</p>
@@ -1226,83 +1254,35 @@
 
     <!-- GALLERY AREA START -->
     <section class="gallery-area section-padding" style="position: relative;">
-        <div class="promotion-area-bg" data-stellar-background-ratio="0.6"
-            style="background-image:url('img/unsplash_download_5.png'); background-size:cover; background-position:center;">
-        </div>
         <div class="container-fluid" style="position: relative; z-index: 2;">
             <div class="row">
                 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-                    <div class="area-title text-center">
-                        <h2 style="color: #fff;">Gallery</h2>
+                    <div class="area-title text-center" style="margin-bottom: 35px;">
+                        <h2 class="why-guests-title" style="color: #ffffff !important;">Gallery</h2>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div class="gallery-slider owl-carousel">
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_1_small.png" alt="Gallery Image 1"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_1_large.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 1"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_6.png" alt="Gallery Image 2"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_7.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 2"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_8.png" alt="Gallery Image 3"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_9.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 3"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_10.png" alt="Gallery Image 4"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_11.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 4"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_12.png" alt="Gallery Image 5"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_13.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 5"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_14.png" alt="Gallery Image 6"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_15.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 6"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_16.png" alt="Gallery Image 7"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_17.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 7"><i class="fa fa-search-plus"></i></a>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="img/unsplash_download_18.png" alt="Gallery Image 8"
-                                class="img-responsive fixed-gallery-img">
-                            <div class="gallery-overlay">
-                                <a href="img/unsplash_download_19.png" data-lightbox="gallery"
-                                    data-title="Gallery Image 8"><i class="fa fa-search-plus"></i></a>
-                            </div>
+                <div class="col-md-12" style="padding: 0;">
+                    <div class="gallery-slider-wrapper">
+                        <div class="gallery-slider-track">
+                            <div class="gallery-item-card"><img src="img/unsplash_download_1_small.png" alt="Specialty Kebabs"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_6.png" alt="Steak &amp; Fries"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_8.png" alt="Seafood Clam Chowder"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_10.png" alt="Fine Dining Experience"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_12.png" alt="Gourmet Buffet Items"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_14.png" alt="Chef Specialties"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_16.png" alt="Authentic Curries"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_18.png" alt="Desserts &amp; Delights"></div>
+
+                            <div class="gallery-item-card"><img src="img/unsplash_download_1_small.png" alt="Specialty Kebabs"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_6.png" alt="Steak &amp; Fries"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_8.png" alt="Seafood Clam Chowder"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_10.png" alt="Fine Dining Experience"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_12.png" alt="Gourmet Buffet Items"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_14.png" alt="Chef Specialties"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_16.png" alt="Authentic Curries"></div>
+                            <div class="gallery-item-card"><img src="img/unsplash_download_18.png" alt="Desserts &amp; Delights"></div>
                         </div>
                     </div>
                 </div>
@@ -1361,7 +1341,7 @@
                         <p class="book-table-subtitle">We'll take care of the rest.</p>
                     </div>
 
-                    <form action="#" class="redesigned-image-form" id="reservation-inline">
+                    <form action="submit_lead.php" method="POST" class="redesigned-image-form" id="reservation-inline">
                         <div class="row">
                             <!-- Row 1 -->
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -1390,61 +1370,38 @@
                                 <div class="form-field-wrapper">
                                     <div class="icon-box"><i class="fa-regular fa-calendar"></i></div>
                                     <input type="text" name="date" id="inline-date" data-select="datepicker"
-                                        placeholder="Date" required>
+                                        placeholder="Select Date" required readonly
+                                        style="background-color: #fff; cursor: pointer;">
                                 </div>
                             </div>
 
-                            <!-- Row 3 -->
+                            <!-- Row 3: Single Samsung Alarm Clock Time Field -->
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <div class="form-field-wrapper select-field-wrapper">
+                                <div class="form-field-wrapper">
                                     <div class="icon-box"><i class="fa-regular fa-clock"></i></div>
-                                    <select name="time" id="inline-time" required>
-                                        <option value="" disabled selected>Time</option>
-                                        <option value="18:00">18:00 (6:00 PM)</option>
-                                        <option value="18:30">18:30 (6:30 PM)</option>
-                                        <option value="19:00">19:00 (7:00 PM)</option>
-                                        <option value="19:30">19:30 (7:30 PM)</option>
-                                        <option value="20:00">20:00 (8:00 PM)</option>
-                                        <option value="20:30">20:30 (8:30 PM)</option>
-                                        <option value="21:00">21:00 (9:00 PM)</option>
-                                        <option value="21:30">21:30 (9:30 PM)</option>
-                                        <option value="22:00">22:00 (10:00 PM)</option>
-                                    </select>
-                                    <div class="select-arrow"><i class="fa-solid fa-chevron-down"></i></div>
+                                    <input type="text" id="inline-time-display" placeholder="Select Time" required
+                                        readonly style="background-color: #fff; cursor: pointer;" value="6:00 PM">
+                                    <input type="hidden" name="time" id="inline-time" value="18:00">
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="row split-select-row">
                                     <!-- Adults -->
                                     <div class="col-xs-6 split-col">
-                                        <div class="form-field-wrapper select-field-wrapper">
+                                        <div class="form-field-wrapper">
                                             <div class="icon-box"><i class="fa-regular fa-user"></i></div>
-                                            <select name="adults" id="inline-adults" required>
-                                                <option value="" disabled selected>Adults</option>
-                                                <option value="1">1 Adult</option>
-                                                <option value="2">2 Adults</option>
-                                                <option value="3">3 Adults</option>
-                                                <option value="4">4 Adults</option>
-                                                <option value="5">5 Adults</option>
-                                                <option value="6">6 Adults</option>
-                                                <option value="7">7+ Adults</option>
-                                            </select>
-                                            <div class="select-arrow"><i class="fa-solid fa-chevron-down"></i></div>
+                                            <input type="text" inputmode="numeric" pattern="[0-9]*" name="adults"
+                                                id="inline-adults" placeholder="Adults" required
+                                                oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                                         </div>
                                     </div>
                                     <!-- Children -->
                                     <div class="col-xs-6 split-col">
-                                        <div class="form-field-wrapper select-field-wrapper">
+                                        <div class="form-field-wrapper">
                                             <div class="icon-box"><i class="fa-solid fa-child hollow-fa"></i></div>
-                                            <select name="children" id="inline-children">
-                                                <option value="" disabled selected>Children</option>
-                                                <option value="0">0 Children</option>
-                                                <option value="1">1 Child</option>
-                                                <option value="2">2 Children</option>
-                                                <option value="3">3 Children</option>
-                                                <option value="4">4+ Children</option>
-                                            </select>
-                                            <div class="select-arrow"><i class="fa-solid fa-chevron-down"></i></div>
+                                            <input type="text" inputmode="numeric" pattern="[0-9]*" name="children"
+                                                id="inline-children" placeholder="Children"
+                                                oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                                         </div>
                                     </div>
                                 </div>
@@ -1475,8 +1432,10 @@
     </section>
     <!--BOOKING FORM AREA END-->
 
+
+
     <!--FOOER AREA-->
-    <div class="footer-area" id="contact">
+    <div class="footer-area" id="footer-details">
         <div class="footer-area-bg" data-stellar-background-ratio="0.6"
             style="background-image:url('img/unsplash_download_20.png'); background-size:cover; background-position:center;">
         </div>
@@ -1531,13 +1490,65 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/stellar.js"></script>
     <script src="js/jquery.mixitup.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
     <script src="js/instafeed.min.js"></script>
     <script src="js/datepicker.min.js"></script>
     <script src="js/timepicker.min.js"></script>
     <script src="js/wow.min.js"></script>
     <script src="js/typed.js"></script>
     <script src="js/jquery.magnific-popup.min.js"></script>
-    <script src="js/jquery.sticky.js"></script>
+    <!-- Floating Booking Success Toast Card -->
+    <div id="booking-success-toast" class="booking-success-toast">
+        <div class="toast-check-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="toast-text-content">
+            <div class="toast-title">TABLE BOOKED SUCCESSFULLY!</div>
+            <div class="toast-sub">We look forward to welcoming you at The Spice.</div>
+        </div>
+    </div>
+
+    <!-- Samsung Alarm Clock Time Picker Modal -->
+    <div class="samsung-clock-picker-overlay" id="samsung-clock-modal">
+        <div class="samsung-clock-card">
+            <div class="samsung-clock-header">
+                <button type="button" class="samsung-clock-close" id="samsung-clock-close">&times;</button>
+                <div class="samsung-clock-time-display">
+                    <span id="samsung-preview-hour">06</span>:<span id="samsung-preview-min">00</span> <span
+                        id="samsung-preview-ampm">PM</span>
+                </div>
+                <div class="samsung-clock-step-label" id="samsung-step-label">SELECT HOUR</div>
+            </div>
+
+            <!-- Step 1: Circular Clock Face -->
+            <div id="samsung-step-hour">
+                <div class="samsung-ampm-toggle">
+                    <button type="button" class="ampm-btn" data-ampm="AM">AM</button>
+                    <button type="button" class="ampm-btn active" data-ampm="PM">PM</button>
+                </div>
+                <div class="samsung-clock-dial" id="samsung-clock-dial">
+                    <div class="samsung-clock-center-dot"></div>
+                </div>
+            </div>
+
+            <!-- Step 2: 2 Minute Options (:00 and :30) -->
+            <div id="samsung-step-minute" style="display: none;">
+                <div class="samsung-minute-box">
+                    <button type="button" class="samsung-minute-btn" data-min="00">
+                        <span>:00</span>
+                        <small style="font-size: 12px; opacity: 0.6; font-weight: 500;">Exact Hour</small>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 14px;"></i>
+                    </button>
+                    <button type="button" class="samsung-minute-btn" data-min="30">
+                        <span>:30</span>
+                        <small style="font-size: 12px; opacity: 0.6; font-weight: 500;">Half Hour</small>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 14px;"></i>
+                    </button>
+                </div>
+                <button type="button" class="samsung-back-btn" id="samsung-back-to-hours">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Hours
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!--===== ACTIVE JS=====-->
     <script src="js/main.js"></script>

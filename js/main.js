@@ -1,4 +1,4 @@
-jQuery(document).on('ready', function ($) {
+jQuery(document).ready(function ($) {
     "use strict";
 
     /*--------------------------
@@ -13,10 +13,14 @@ jQuery(document).on('ready', function ($) {
     /*--------------------------
         STICKY MAINMENU
     ---------------------------*/
-    if ($(window).width() > 767) {
-        $("#mainmenu-area").sticky({
-            topSpacing: 0
-        });
+    if ($(window).width() > 767 && $.fn.sticky) {
+        try {
+            $("#mainmenu-area").sticky({
+                topSpacing: 0
+            });
+        } catch(e) {
+            console.warn('Sticky plugin error:', e);
+        }
     }
 
 
@@ -55,13 +59,122 @@ jQuery(document).on('ready', function ($) {
 
 
     /*------------------------------
-        TIME PICKER ACTIVE
+        DATE PICKER ACTIVE (DISABLE PAST DATES)
     -------------------------------*/
-    var input = $('#time').clockpicker({
-        placement: 'bottom',
-        align: 'left',
-        autoclose: true,
-        'default': 'now'
+    if ($.fn.datepicker) {
+        $('[data-select="datepicker"], #inline-date').datepicker({
+            startDate: new Date(),
+            autoHide: true,
+            format: 'yyyy-mm-dd'
+        });
+    }
+
+    /*--------------------------------------------------
+        SAMSUNG ALARM CLOCK CIRCULAR TIME PICKER ENGINE
+    ---------------------------------------------------*/
+    var $modal = $('#samsung-clock-modal');
+    var $dial = $('#samsung-clock-dial');
+    var selHour = 6;
+    var selMin = '00';
+    var selAmPm = 'PM';
+
+    // Generate 12 Circular Ticks on Dial
+    if ($dial.length) {
+        $dial.find('.samsung-clock-tick').remove();
+        var radius = 85;
+        var center = 115;
+        var hourNumbers = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+        hourNumbers.forEach(function(h, idx) {
+            var angleDeg = (idx * 30) - 90;
+            var angleRad = angleDeg * (Math.PI / 180);
+            var x = Math.round(center + radius * Math.cos(angleRad) - 19);
+            var y = Math.round(center + radius * Math.sin(angleRad) - 19);
+
+            var $tick = $('<div class="samsung-clock-tick"></div>')
+                .css({ left: x + 'px', top: y + 'px' })
+                .text(h)
+                .attr('data-hour', h);
+
+            if (h === selHour) $tick.addClass('active');
+            $dial.append($tick);
+        });
+    }
+
+    function updateSamsungPreview() {
+        var hStr = (selHour < 10 ? '0' : '') + selHour;
+        $('#samsung-preview-hour').text(hStr);
+        $('#samsung-preview-min').text(selMin);
+        $('#samsung-preview-ampm').text(selAmPm);
+    }
+
+    // Open Modal on Single Field Click
+    $(document).on('click focus', '#inline-time-display', function(e) {
+        e.preventDefault();
+        $('#samsung-step-hour').show();
+        $('#samsung-step-minute').hide();
+        $('#samsung-step-label').text('SELECT HOUR');
+        updateSamsungPreview();
+        $modal.addClass('active');
+    });
+
+    // Close Modal
+    $(document).on('click', '#samsung-clock-close, .samsung-clock-picker-overlay', function(e) {
+        if (e.target === this || $(e.target).hasClass('samsung-clock-close') || $(e.target).parent().hasClass('samsung-clock-close')) {
+            $modal.removeClass('active');
+        }
+    });
+
+    // AM/PM Toggle
+    $(document).on('click', '.samsung-ampm-toggle .ampm-btn', function() {
+        $('.samsung-ampm-toggle .ampm-btn').removeClass('active');
+        $(this).addClass('active');
+        selAmPm = $(this).data('ampm');
+        updateSamsungPreview();
+    });
+
+    // Step 1: Select Hour on Circular Clock Face
+    $(document).on('click', '.samsung-clock-tick', function() {
+        $('.samsung-clock-tick').removeClass('active');
+        $(this).addClass('active');
+        selHour = parseInt($(this).data('hour'));
+        updateSamsungPreview();
+
+        // Transition to Step 2: Minutes
+        $('#samsung-step-hour').fadeOut(150, function() {
+            $('#samsung-step-minute').fadeIn(150);
+            $('#samsung-step-label').text('SELECT MINUTE');
+        });
+    });
+
+    // Back to Hours Step
+    $(document).on('click', '#samsung-back-to-hours', function() {
+        $('#samsung-step-minute').fadeOut(150, function() {
+            $('#samsung-step-hour').fadeIn(150);
+            $('#samsung-step-label').text('SELECT HOUR');
+        });
+    });
+
+    // Step 2: Select Minute (:00 or :30) and Finalize
+    $(document).on('click', '.samsung-minute-btn', function() {
+        selMin = $(this).data('min') + '';
+        updateSamsungPreview();
+
+        // Calculate 24-hr format
+        var hr24 = selHour;
+        if (selAmPm === 'PM' && selHour < 12) hr24 += 12;
+        if (selAmPm === 'AM' && selHour === 12) hr24 = 0;
+        
+        var hr24Str = (hr24 < 10 ? '0' : '') + hr24;
+        var time24 = hr24Str + ':' + selMin;
+        var displayStr = selHour + ':' + selMin + ' ' + selAmPm;
+
+        // Set form field values
+        $('#inline-time-display').val(displayStr);
+        $('#inline-time').val(time24);
+
+        // Auto close modal
+        $modal.removeClass('active');
     });
 
 
@@ -84,6 +197,18 @@ jQuery(document).on('ready', function ($) {
         mainClass: 'mfp-fade',
         removalDelay: 320,
         preloader: false
+    });
+
+    /*------------------------------
+        GALLERY IMAGE POPUP
+    --------------------------------*/
+    $('.gallery-overlay a').magnificPopup({
+        type: 'image',
+        gallery: {
+            enabled: true
+        },
+        mainClass: 'mfp-fade',
+        removalDelay: 300
     });
 
 
@@ -318,28 +443,42 @@ jQuery(document).on('ready', function ($) {
     /*----------------------------
         INSTAGRAM FEED ACTIVE
     -----------------------------*/
-    var feed = new Instafeed({
-        get: 'user',
-        userId: 3287251940,
-        accessToken: '3287251940.4ac71b3.d88be01ca9c94e2e8a2d923fe0a5169e',
-        target: 'instagram',
-        limit: 10, //max 60 images..
-        resolution: 'standard_resolution',
-        after: function () {
-            var el = document.getElementById('instagram');
-            if (el.classList)
-                el.classList.add('show');
-            else
-                el.className += ' ' + 'show';
+    if ($('#instagram').length && typeof Instafeed !== 'undefined') {
+        try {
+            var feed = new Instafeed({
+                get: 'user',
+                userId: 3287251940,
+                accessToken: '3287251940.4ac71b3.d88be01ca9c94e2e8a2d923fe0a5169e',
+                target: 'instagram',
+                limit: 10, //max 60 images..
+                resolution: 'standard_resolution',
+                after: function () {
+                    var el = document.getElementById('instagram');
+                    if (el) {
+                        if (el.classList)
+                            el.classList.add('show');
+                        else
+                            el.className += ' ' + 'show';
+                    }
+                }
+            });
+            feed.run();
+        } catch (e) {
+            console.warn('Instafeed bypassed:', e);
         }
-    });
-    feed.run();
+    }
     
     
     /*--------------------------
         ACTIVE WOW JS
     ----------------------------*/
-    new WOW().init();
+    if (typeof WOW !== 'undefined') {
+        try {
+            new WOW().init();
+        } catch(e) {
+            console.warn('WOW init bypassed:', e);
+        }
+    }
     
     /*---------------------------
         MOBILE MENU ACCORDION
@@ -350,15 +489,123 @@ jQuery(document).on('ready', function ($) {
         }
     });
 
-}(jQuery));
+    // Set minimum booking date to today
+    var todayStr = new Date().toISOString().split('T')[0];
+    $('#inline-date').attr('min', todayStr);
+
+    /*---------------------------
+        RESERVATION FORM SUBMIT
+    -----------------------------*/
+    $(document).on('submit', '#reservation-inline', async function(e) {
+        e.preventDefault();
+        var dateVal = $('#inline-date').val();
+        var date = dateVal;
+        var todayVal = new Date().toISOString().split('T')[0];
+
+        if (dateVal && dateVal.includes('/')) {
+            var parts = dateVal.split('/');
+            if (parts.length === 3) {
+                if (parts[0].length === 4) {
+                    date = parts[0] + '-' + parts[1].padStart(2, '0') + '-' + parts[2].padStart(2, '0');
+                } else {
+                    date = parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+                }
+            }
+        }
+
+        if (!date || date < todayVal) {
+            alert('Past dates are not allowed. Please select today or a future date for your reservation.');
+            return false;
+        }
+
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalBtnHtml = submitBtn.html();
+        
+        submitBtn.html('<span class="btn-text">BOOKING...</span> <i class="fa-solid fa-spinner fa-spin"></i>');
+        submitBtn.prop('disabled', true);
+
+        var name = $('#inline-name').val();
+        var email = $('#inline-email').val();
+        var mobile = $('#inline-mobile').val();
+        var time = $('#inline-time').val() || '18:00';
+        var adults = parseInt($('#inline-adults').val() || 0);
+        var children = parseInt($('#inline-children').val() || 0);
+        var requests = $('#inline-requests').val();
+        var guests = adults + children;
+
+        try {
+            const res = await fetch('admin/api/bookings.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, mobile, date, time, guests, requests, adults, children })
+            });
+            
+            if (!res.ok) {
+                throw new Error('Server returned ' + res.status + ' ' + res.statusText);
+            }
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                // 1. Success animation
+                submitBtn.addClass('btn-success-booked');
+                submitBtn.html('<span class="btn-left-icon" style="background:transparent!important;"><i class="fa-solid fa-circle-check" style="font-size:20px; color:#fff;"></i></span> <span class="btn-text" style="font-weight:800; font-size:16px; letter-spacing:1px;">TABLE BOOKED!</span> <span class="btn-right-arrow" style="background:transparent!important;"><i class="fa-solid fa-check" style="font-size:18px; color:#fff;"></i></span>');
+
+                // 2. Show floating success toast banner
+                var $toast = $('#booking-success-toast');
+                $toast.addClass('show');
+
+                // 3. Reset form inputs
+                $('#reservation-inline')[0].reset();
+                $('#inline-date').attr('min', todayVal);
+                $('#inline-time-display').val('6:00 PM');
+                $('#inline-time').val('18:00');
+
+                // 4. Hide toast & reset button after 4 seconds
+                setTimeout(function() {
+                    $toast.removeClass('show');
+                    submitBtn.removeClass('btn-success-booked');
+                    submitBtn.html(originalBtnHtml);
+                    submitBtn.prop('disabled', false);
+                }, 4000);
+            } else {
+                alert('Booking failed: ' + (data.message || 'Unknown error'));
+                submitBtn.html(originalBtnHtml);
+                submitBtn.prop('disabled', false);
+            }
+        } catch (err) {
+            console.error('Error submitting booking:', err);
+            alert('Server error. Please try again later.');
+            submitBtn.html(originalBtnHtml);
+            submitBtn.prop('disabled', false);
+        }
+        return false;
+    });
+
+});
 
 
+/*--------------------------
+    FAIL-SAFE PRELOADER ENGINE
+----------------------------*/
+function hidePreloader() {
+    var $loader = $('.preeloader, #app-preloader');
+    if ($loader.length && !$loader.hasClass('dismissed')) {
+        $loader.addClass('dismissed preloader-hidden').css({'opacity': '0', 'pointer-events': 'none'});
+        setTimeout(function() {
+            $loader.hide().remove();
+        }, 400);
+    }
+}
+
+// 1. Hide on DOM ready
+jQuery(document).ready(function() {
+    setTimeout(hidePreloader, 300);
+});
+
+// 2. Hide on window load
 jQuery(window).on('load', function () {
-
-    /*--------------------------
-        PRE LOADER
-    ----------------------------*/
-    $(".preeloader").fadeOut(1000);
+    hidePreloader();
 
     /*--------------------------
         SMOOTH SCROLL
@@ -373,3 +620,6 @@ jQuery(window).on('load', function () {
         }
     });
 });
+
+// 3. Absolute 800ms fail-safe fallback
+setTimeout(hidePreloader, 800);
