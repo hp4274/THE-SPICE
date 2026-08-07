@@ -1,5 +1,6 @@
 <?php
 // admin/includes/db.php
+date_default_timezone_set('Asia/Kolkata');
 
 $host = 'localhost';
 $dbname = 'spice_restaurant';

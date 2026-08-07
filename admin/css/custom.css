@@ -402,3 +402,172 @@
     border-color: #DC2626 !important;
     box-shadow: 0 5px 12px rgba(220, 38, 38, 0.4) !important;
 }
+
+/* ==========================================================================
+   Motion & Feedback Layer
+   Every write goes through apiRequest() -> smoothReload(), so the page needs
+   a visible "working" state and a soft hand-off instead of a hard flash.
+   ========================================================================== */
+
+/* Top progress bar while any API request is in flight */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    z-index: 12000;
+    background: linear-gradient(90deg, var(--primary-red), #F59E0B, var(--primary-red));
+    background-size: 200% 100%;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    pointer-events: none;
+}
+
+body.is-busy::before,
+body.is-refreshing::before {
+    opacity: 1;
+    transform: scaleX(0.85);
+    animation: progress-slide 1.2s linear infinite;
+}
+
+@keyframes progress-slide {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Page fades out just before a reload so the refresh reads as a transition */
+.page-content {
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+body.is-refreshing .page-content {
+    opacity: 0.45;
+    transform: translateY(4px);
+    pointer-events: none;
+}
+
+body.is-busy {
+    cursor: progress;
+}
+
+/* Per-button spinner: the icon is swapped for a ring so the row stays put */
+.is-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+.is-loading > * {
+    visibility: hidden;
+}
+
+.is-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15px;
+    height: 15px;
+    margin: -8px 0 0 -8px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    animation: btn-spin 0.6s linear infinite;
+    visibility: visible;
+}
+
+@keyframes btn-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Live occupant / merge line on a floor-plan card */
+.table-occupant {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: rgba(0, 0, 0, 0.035);
+    border-radius: var(--radius-pill);
+    padding: 5px 12px;
+    max-width: 100%;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Deep-linked row highlight (bills.php?focus=…) */
+.row-focus > td {
+    background: rgba(229, 57, 53, 0.08) !important;
+    animation: row-pulse 1.1s ease-in-out 2;
+}
+
+@keyframes row-pulse {
+    0%, 100% { background-color: rgba(229, 57, 53, 0.08); }
+    50%      { background-color: rgba(229, 57, 53, 0.18); }
+}
+
+/* Flash banners fade themselves out */
+.flash-banner {
+    transition: opacity 0.5s ease, transform 0.5s ease, margin 0.5s ease;
+}
+
+.flash-banner.flash-out {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+/* Global search results */
+.search-result-item {
+    transition: var(--transition-smooth);
+}
+
+.search-result-item:hover {
+    background: var(--pure-white) !important;
+    border-color: rgba(229, 57, 53, 0.25) !important;
+    transform: translateX(3px);
+}
+
+/* Table rows settle in instead of snapping when filtered */
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+/* Floor-plan cards: keep the flip crisp and stop the back face clipping */
+.table-card-inner {
+    will-change: transform;
+    min-height: 340px;
+}
+
+.table-card-flip-container {
+    perspective: 1400px;
+}
+
+.table-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+/* Respect users who ask the OS for less motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .table-card:hover,
+    .search-result-item:hover,
+    .timeline-content:hover {
+        transform: none;
+    }
+}

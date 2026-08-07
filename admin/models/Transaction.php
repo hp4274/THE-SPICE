@@ -34,15 +34,23 @@ class Transaction {
 
     public static function getAll() {
         global $pdo;
-        $stmt = $pdo->query("SELECT *, bill_no as bill_id FROM transactions ORDER BY created_at DESC");
-        return $stmt->fetchAll();
+        try {
+            $stmt = $pdo->query("SELECT * FROM transactions ORDER BY created_at DESC");
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            return [];
+        }
     }
     
     public static function getById($id) {
         global $pdo;
-        $stmt = $pdo->prepare("SELECT *, bill_no as bill_id FROM transactions WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch();
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM transactions WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch();
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }
 ?>

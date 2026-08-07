@@ -91,8 +91,11 @@ if ($stmt) {
             </div>
 
             <div class="form-group">
-                <label class="form-label">Auto-Cancel Unconfirmed Reservations (minutes)</label>
-                <input type="number" name="settings[auto_cancel_mins]" value="<?php echo htmlspecialchars($settings_data['auto_cancel_mins'] ?? '15'); ?>">
+                <label class="form-label">No-Show Grace Period (minutes)</label>
+                <input type="number" min="1" max="120" name="settings[no_show_grace_mins]" value="<?php echo htmlspecialchars($settings_data['no_show_grace_mins'] ?? $settings_data['auto_cancel_mins'] ?? '5'); ?>" required>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                    Bookings past scheduled time + grace minutes automatically mark as <strong>No Show</strong>.
+                </div>
             </div>
         </div>
     </div>

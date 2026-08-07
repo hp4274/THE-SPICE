@@ -36,14 +36,14 @@ class Table {
     /**
      * Smart Availability check:
      * A table is available at $date and $time if:
-     * 1. It is not Blocked/Maintenance
+     * 1. It is not Blocked/Maintenance/Merged/Cleaning
      * 2. No active (Upcoming, Confirmed, Arrived, Dining) reservation exists on this table within 2 hours (120 mins).
      * 3. If an earlier reservation was marked Completed/Cancelled (table freed early), it is available immediately!
      */
     public static function getAvailableForTime($date, $time, $excludeReservationId = null) {
         global $pdo;
-        $sql = "SELECT t.* FROM tables t 
-                WHERE t.status NOT IN ('Blocked', 'Maintenance')
+        $sql = "SELECT t.* FROM tables t
+                WHERE t.status NOT IN ('Blocked', 'Maintenance', 'Merged', 'Cleaning', 'Needs Cleaning')
                 AND NOT EXISTS (
                     SELECT 1 FROM reservations r 
                     WHERE r.table_id = t.id 

@@ -3,16 +3,10 @@
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="sidebar-logo">
-            <span>SP</span>
-        </div>
-        <div class="sidebar-title-group">
-            <div class="sidebar-title">
-                The Spice <span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 99px; background: rgba(229,57,53,0.12); color: var(--primary-red); font-weight: 800;">PRO</span>
-            </div>
-            <div class="sidebar-subtitle">Buffet Management System</div>
-        </div>
+    <div class="sidebar-header" style="justify-content: center; padding: 14px 10px; background: linear-gradient(135deg, #E53935 0%, #B71C1C 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.15); overflow: hidden;">
+        <a href="index.php" style="display: flex; align-items: center; justify-content: center; text-decoration: none; width: 100%;">
+            <img src="../img/logo-text.png" alt="The Spice Logo" style="height: 95px; width: 100%; max-width: 230px; object-fit: contain; transform: scale(1.45); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));" onerror="this.onerror=null; this.src='../img/main_logo.png';">
+        </a>
     </div>
     
     <nav class="sidebar-nav">

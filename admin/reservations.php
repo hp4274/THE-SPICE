@@ -5,10 +5,10 @@ require_once 'models/Reservation.php';
 require_once 'models/Lead.php';
 require_once 'models/Table.php';
 require_once 'models/Bill.php';
+require_once 'services/SyncService.php';
 
-include 'includes/header.php';
-
-// Handle Direct POST (Create New Reservation)
+// Handle Direct POST (Create New Reservation).
+// Runs before header.php prints HTML so the redirect below actually fires.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'create_reservation') {
         $customerName = trim($_POST['customer_name']);
@@ -47,21 +47,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+include 'includes/header.php';
+
 // Fetch all reservations
 $reservations = Reservation::getAll();
 $available_tables = Table::getAvailable();
+
+// Preload tables once instead of a query per row
+$tables_by_id = [];
+foreach (Table::getAll() as $tRow) {
+    $tables_by_id[$tRow['id']] = $tRow;
+}
 ?>
 
 <!-- Filter Chips Header -->
 <div class="glass-card" style="padding: 16px 24px; margin-bottom: 4px;">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div class="filter-chips" style="margin: 0;">
-            <button class="chip-btn active" onclick="filterReservations('all')">All (<?php echo count($reservations); ?>)</button>
-            <button class="chip-btn" onclick="filterReservations('upcoming')">Upcoming</button>
-            <button class="chip-btn" onclick="filterReservations('arrived')">Arrived</button>
-            <button class="chip-btn" onclick="filterReservations('dining')">Dining</button>
-            <button class="chip-btn" onclick="filterReservations('completed')">Completed</button>
-            <button class="chip-btn" onclick="filterReservations('cancelled')">Cancelled</button>
+            <button class="chip-btn active" onclick="filterReservations('all', event)">All (<?php echo count($reservations); ?>)</button>
+            <button class="chip-btn" onclick="filterReservations('upcoming', event)">Upcoming</button>
+            <button class="chip-btn" onclick="filterReservations('arrived', event)">Arrived</button>
+            <button class="chip-btn" onclick="filterReservations('dining', event)">Dining</button>
+            <button class="chip-btn" onclick="filterReservations('completed', event)">Completed</button>
+            <button class="chip-btn" onclick="filterReservations('cancelled', event)">Cancelled</button>
+            <button class="chip-btn" onclick="filterReservations('no-show', event)">No Show</button>
         </div>
         <div>
             <button class="btn btn-primary btn-sm" onclick="openModal('newReservationModal')">
@@ -97,7 +106,7 @@ $available_tables = Table::getAvailable();
                     <?php foreach ($reservations as $res): 
                         $status = htmlspecialchars($res['status']);
                         $badgeClass = strtolower(str_replace(' ', '-', $status));
-                        $table = $res['table_id'] ? Table::getById($res['table_id']) : null;
+                        $table = ($res['table_id'] && isset($tables_by_id[$res['table_id']])) ? $tables_by_id[$res['table_id']] : null;
                     ?>
                     <tr class="res-row" data-status="<?php echo $badgeClass; ?>" id="res-row-<?php echo $res['id']; ?>">
                         <td style="font-weight: 800; color: var(--primary-red);">Res #<?php echo htmlspecialchars($res['id']); ?></td>
@@ -114,7 +123,7 @@ $available_tables = Table::getAvailable();
                         </td>
                         <td>
                             <?php if ($table): ?>
-                                <span style="font-weight: 800; color: var(--primary-red); font-size: 0.85rem;">T-<?php echo htmlspecialchars($table['table_number']); ?></span>
+                                <span style="font-weight: 800; color: var(--primary-red); font-size: 0.85rem;"><?php echo htmlspecialchars($table['table_number']); ?></span>
                             <?php else: ?>
                                 <span style="color: var(--text-muted); font-style: italic; font-size: 0.8rem;">Unassigned</span>
                             <?php endif; ?>
@@ -125,20 +134,37 @@ $available_tables = Table::getAvailable();
                         <td>
                             <div class="action-btns">
                                 <?php if ($status === 'Upcoming' || $status === 'Confirmed'): ?>
-                                <button class="action-btn" title="Mark Arrived" onclick="updateStatus(<?php echo $res['id']; ?>, 'Arrived')">
+                                <button class="action-btn" title="Mark Arrived" onclick="updateStatus(<?php echo $res['id']; ?>, 'Arrived', this)">
                                     <i data-lucide="user-check" style="color: #10B981;"></i>
                                 </button>
-                                <button class="action-btn" title="Cancel Reservation" onclick="updateStatus(<?php echo $res['id']; ?>, 'Cancelled')">
+                                <button class="action-btn" title="Transfer Table" onclick="openChangeTableModal(<?php echo $res['id']; ?>, '<?php echo $res['reservation_date']; ?>', '<?php echo $res['reservation_time']; ?>')">
+                                    <i data-lucide="arrow-right-left" style="color: #0284C7;"></i>
+                                </button>
+                                <button class="action-btn" title="Mark No Show" onclick="updateStatus(<?php echo $res['id']; ?>, 'No Show', this)">
+                                    <i data-lucide="user-x" style="color: #64748B;"></i>
+                                </button>
+                                <button class="action-btn" title="Cancel Reservation" onclick="updateStatus(<?php echo $res['id']; ?>, 'Cancelled', this)">
                                     <i data-lucide="x-circle" style="color: #E53935;"></i>
                                 </button>
                                 <?php elseif ($status === 'Arrived'): ?>
-                                <button class="action-btn" title="Seat Customer" onclick="updateStatus(<?php echo $res['id']; ?>, 'Dining')">
+                                <button class="action-btn" title="Seat Customer" onclick="updateStatus(<?php echo $res['id']; ?>, 'Dining', this)">
                                     <i data-lucide="play" style="color: var(--primary-red);"></i>
+                                </button>
+                                <button class="action-btn" title="Transfer Table" onclick="openChangeTableModal(<?php echo $res['id']; ?>, '<?php echo $res['reservation_date']; ?>', '<?php echo $res['reservation_time']; ?>')">
+                                    <i data-lucide="arrow-right-left" style="color: #0284C7;"></i>
+                                </button>
+                                <button class="action-btn" title="Cancel Reservation" onclick="updateStatus(<?php echo $res['id']; ?>, 'Cancelled', this)">
+                                    <i data-lucide="x-circle" style="color: #E53935;"></i>
                                 </button>
                                 <?php elseif ($status === 'Dining'): ?>
                                 <button class="action-btn" title="Transfer Table" onclick="openChangeTableModal(<?php echo $res['id']; ?>, '<?php echo $res['reservation_date']; ?>', '<?php echo $res['reservation_time']; ?>')">
                                     <i data-lucide="arrow-right-left" style="color: #0284C7;"></i>
                                 </button>
+                                <?php if (!empty($res['bill_id'])): ?>
+                                <a class="action-btn" title="Open Bill & Settle Payment" href="bills.php?focus=<?php echo (int)$res['bill_id']; ?>">
+                                    <i data-lucide="receipt" style="color: var(--primary-red);"></i>
+                                </a>
+                                <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </td>
@@ -319,32 +345,36 @@ async function submitChangeTable(e) {
     const res = await apiRequest('reservations.change_table', { reservation_id: resId, new_table_id: newTableId });
     if(res.success) {
         closeModal('changeTableModal');
-        setTimeout(() => location.reload(), 800);
+        smoothReload();
     }
 }
 
-async function updateStatus(resId, newStatus) {
-    if(!confirm(`Mark this reservation as ${newStatus}?`)) return;
-    const action = newStatus === 'Cancelled' ? 'reservations.cancel' : (newStatus === 'Arrived' ? 'reservations.arrive' : (newStatus === 'Dining' ? 'reservations.seat' : null));
+const RES_ACTIONS = {
+    'Cancelled': 'reservations.cancel',
+    'Arrived': 'reservations.arrive',
+    'Dining': 'reservations.seat',
+    'No Show': 'reservations.noshow'
+};
+
+async function updateStatus(resId, newStatus, btn) {
+    const action = RES_ACTIONS[newStatus];
     if(!action) return;
+    if(!confirm(`Mark this reservation as ${newStatus}?`)) return;
 
-    const res = await apiRequest(action, { reservation_id: resId });
-    if(res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+    return withBusy(btn, async () => {
+        const res = await apiRequest(action, { reservation_id: resId });
+        if (res.success) smoothReload();
+    });
 }
 
-function filterReservations(statusFilter) {
+function filterReservations(statusFilter, evt) {
     document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    const trigger = (evt || window.event)?.currentTarget || (evt || window.event)?.target;
+    if (trigger) trigger.classList.add('active');
 
     const rows = document.querySelectorAll('.res-row');
     rows.forEach(row => {
-        if (statusFilter === 'all' || row.dataset.status === statusFilter) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+        row.style.display = (statusFilter === 'all' || row.dataset.status === statusFilter) ? '' : 'none';
     });
 }
 </script>

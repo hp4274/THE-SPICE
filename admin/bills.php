@@ -8,17 +8,20 @@ include 'includes/header.php';
 
 // Fetch all bills
 $bills = Bill::getAll();
+
+// Deep-link target: tables.php / reservations.php send staff straight to one bill
+$focus_bill_id = isset($_GET['focus']) ? (int)$_GET['focus'] : 0;
 ?>
 
 <!-- Filter Chips Header -->
 <div class="glass-card" style="padding: 16px 24px; margin-bottom: 4px;">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div class="filter-chips" style="margin: 0;">
-            <button class="chip-btn active" onclick="filterBills('all')">All Bills (<?php echo count($bills); ?>)</button>
-            <button class="chip-btn" onclick="filterBills('pending')">Pending</button>
-            <button class="chip-btn" onclick="filterBills('active')">Active</button>
-            <button class="chip-btn" onclick="filterBills('paid')">Paid</button>
-            <button class="chip-btn" onclick="filterBills('refunded')">Refunded</button>
+            <button class="chip-btn active" onclick="filterBills('all', event)">All Bills (<?php echo count($bills); ?>)</button>
+            <button class="chip-btn" onclick="filterBills('pending', event)">Pending</button>
+            <button class="chip-btn" onclick="filterBills('active', event)">Active</button>
+            <button class="chip-btn" onclick="filterBills('paid', event)">Paid</button>
+            <button class="chip-btn" onclick="filterBills('cancelled', event)">Cancelled</button>
         </div>
         <div style="display: flex; gap: 10px;">
             <input type="text" placeholder="Search bill # or customer..." class="form-control" style="padding: 8px 16px; border-radius: var(--radius-pill); font-size: 0.825rem; width: 220px;" onkeyup="searchBills(this.value)">
@@ -54,7 +57,7 @@ $bills = Bill::getAll();
                         $badgeClass = strtolower(str_replace(' ', '-', $status));
                         $reservation = $bill['reservation_id'] ? Reservation::getById($bill['reservation_id']) : null;
                     ?>
-                    <tr class="bill-row" data-status="<?php echo $badgeClass; ?>" id="bill-row-<?php echo $bill['id']; ?>">
+                    <tr class="bill-row<?php echo $focus_bill_id === (int)$bill['id'] ? ' row-focus' : ''; ?>" data-status="<?php echo $badgeClass; ?>" id="bill-row-<?php echo $bill['id']; ?>">
                         <td style="font-weight: 800; color: var(--primary-red);">Bill #<?php echo htmlspecialchars($bill['id']); ?></td>
                         <td>
                             <?php if ($reservation): ?>
@@ -76,10 +79,19 @@ $bills = Bill::getAll();
                                 <button type="button" class="btn btn-primary btn-sm" onclick="openPayBillModal(<?php echo $bill['id']; ?>, '<?php echo htmlspecialchars($bill['customer_name']); ?>', <?php echo $bill['grand_total']; ?>)">
                                     <i data-lucide="dollar-sign" style="width: 14px;"></i> Pay Now
                                 </button>
-                                <?php elseif ($status === 'Paid'): ?>
+                                <?php elseif ($status === 'Paid'): 
+                                    $paidTime = strtotime($bill['updated_at'] ?? $bill['created_at']);
+                                    $minsPassed = (time() - $paidTime) / 60;
+                                    if ($minsPassed <= 30):
+                                ?>
                                 <button type="button" class="btn btn-danger btn-sm" onclick="openRefundModal(<?php echo $bill['id']; ?>, '<?php echo htmlspecialchars($bill['customer_name']); ?>', <?php echo $bill['grand_total']; ?>)">
                                     <i data-lucide="rotate-ccw" style="width: 14px;"></i> Refund
                                 </button>
+                                <?php else: ?>
+                                <button type="button" class="btn btn-secondary btn-sm" style="opacity: 0.7;" disabled title="Refund period expired (30 min limit)">
+                                    Paid (Closed)
+                                </button>
+                                <?php endif; ?>
                                 <?php else: ?>
                                 <button type="button" class="btn btn-secondary btn-sm" style="opacity: 0.7;" disabled>
                                     <?php echo $status; ?>
@@ -180,6 +192,15 @@ $bills = Bill::getAll();
 </div>
 
 <script>
+// Arriving from a "Bill & Pay" link: highlight that row and scroll it into view
+document.addEventListener('DOMContentLoaded', () => {
+    const focused = document.querySelector('.bill-row.row-focus');
+    if (focused) {
+        focused.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => focused.classList.remove('row-focus'), 3200);
+    }
+});
+
 function openPayBillModal(billId, customerName, grandTotal) {
     document.getElementById('pay_bill_id').value = billId;
     document.getElementById('pay_bill_amount_display').innerText = '$' + parseFloat(grandTotal).toFixed(2);
@@ -199,12 +220,23 @@ async function submitPayBill(e) {
     const billId = document.getElementById('pay_bill_id').value;
     const method = document.getElementById('pay_method').value;
     const amount = parseFloat(document.getElementById('pay_amount').value);
+    const due = parseFloat(document.getElementById('pay_bill_amount_display').innerText.replace(/[^0-9.]/g, '')) || 0;
 
-    const res = await apiRequest('bills.pay', { bill_id: billId, payment_method: method, amount: amount });
-    if(res.success) {
-        closeModal('payBillModal');
-        setTimeout(() => location.reload(), 800);
+    if (isNaN(amount) || amount <= 0) {
+        showToast("Enter a valid amount received", "error");
+        return;
     }
+    if (amount + 0.001 < due && !confirm(`Received $${amount.toFixed(2)} against a $${due.toFixed(2)} bill. Record this partial payment and close the bill?`)) {
+        return;
+    }
+
+    return withBusy(e.submitter, async () => {
+        const res = await apiRequest('bills.pay', { bill_id: billId, payment_method: method, amount: amount });
+        if (res.success) {
+            closeModal('payBillModal');
+            smoothReload();
+        }
+    });
 }
 
 async function submitRefund(e) {
@@ -213,16 +245,24 @@ async function submitRefund(e) {
     const amount = parseFloat(document.getElementById('refund_amount').value);
     const reason = document.getElementById('refund_reason').value;
 
-    const res = await apiRequest('bills.refund', { bill_id: billId, amount: amount, reason: reason });
-    if(res.success) {
-        closeModal('refundModal');
-        setTimeout(() => location.reload(), 800);
+    if (isNaN(amount) || amount <= 0) {
+        showToast("Enter a valid refund amount", "error");
+        return;
     }
+
+    return withBusy(e.submitter, async () => {
+        const res = await apiRequest('bills.refund', { bill_id: billId, amount: amount, reason: reason });
+        if (res.success) {
+            closeModal('refundModal');
+            smoothReload();
+        }
+    });
 }
 
-function filterBills(statusFilter) {
+function filterBills(statusFilter, evt) {
     document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    const trigger = (evt || window.event)?.currentTarget || (evt || window.event)?.target;
+    if (trigger) trigger.classList.add('active');
 
     const rows = document.querySelectorAll('.bill-row');
     rows.forEach(row => {

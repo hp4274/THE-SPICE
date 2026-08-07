@@ -43,8 +43,13 @@ class Lead {
 
     public static function updateStatus($id, $status, $tableId = null, $reason = null) {
         global $pdo;
-        $stmt = $pdo->prepare("UPDATE leads SET status = ?, assigned_table_id = ?, rejection_reason = ? WHERE id = ?");
-        $res = $stmt->execute([$status, $tableId, $reason, $id]);
+        if ($tableId === null) {
+            $stmt = $pdo->prepare("UPDATE leads SET status = ?, rejection_reason = COALESCE(?, rejection_reason) WHERE id = ?");
+            $res = $stmt->execute([$status, $reason, $id]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE leads SET status = ?, assigned_table_id = ?, rejection_reason = ? WHERE id = ?");
+            $res = $stmt->execute([$status, $tableId, $reason, $id]);
+        }
         if ($res) {
             AuditLog::log("Updated Lead Status", "Lead", $id, "Status changed to $status");
         }

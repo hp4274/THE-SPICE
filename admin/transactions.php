@@ -46,13 +46,14 @@ $transactions = Transaction::getAll();
                     <?php foreach ($transactions as $txn): 
                         $status = htmlspecialchars($txn['status']);
                         $badgeClass = strtolower(str_replace(' ', '-', $status));
+                        $billNo = $txn['bill_id'] ?? $txn['bill_no'] ?? $txn['bill_number'] ?? $txn['id'] ?? 'N/A';
                     ?>
                     <tr class="txn-row" data-status="<?php echo $badgeClass; ?>">
                         <td>
                             <div style="font-weight: 700; color: var(--text-primary);"><?php echo date('M d, Y', strtotime($txn['created_at'])); ?></div>
                             <div style="font-size: 0.725rem; color: var(--text-muted);"><?php echo date('g:i A', strtotime($txn['created_at'])); ?></div>
                         </td>
-                        <td style="font-weight: 800; color: var(--primary-red);">Bill #<?php echo htmlspecialchars($txn['bill_id']); ?></td>
+                        <td style="font-weight: 800; color: var(--primary-red);">Bill #<?php echo htmlspecialchars($billNo); ?></td>
                         <td style="font-weight: 600; color: var(--text-primary);"><?php echo htmlspecialchars($txn['payment_method']); ?></td>
                         <td style="font-weight: 800; font-size: 1rem; color: var(--text-primary);">$<?php echo number_format($txn['amount'], 2); ?></td>
                         <td><span class="status-badge status-<?php echo $badgeClass; ?>"><?php echo $status; ?></span></td>

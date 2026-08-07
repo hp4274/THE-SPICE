@@ -128,17 +128,17 @@ if (empty($reservations)) {
             <button class="btn btn-primary btn-sm" onclick="window.location.href='reservations.php?action=new'">
                 <i data-lucide="plus" style="width: 14px;"></i> New Reservation
             </button>
-            <button class="btn btn-secondary btn-sm" onclick="window.location.href='tables.php'">
+            <button class="btn btn-secondary btn-sm" onclick="window.location.href='tables.php?action=walkin'">
                 <i data-lucide="user-check" style="width: 14px;"></i> Walk-in Customer
             </button>
-            <button class="btn btn-secondary btn-sm" onclick="window.location.href='bills.php'">
-                <i data-lucide="credit-card" style="width: 14px;"></i> Generate Bill
+            <button class="btn btn-secondary btn-sm" onclick="window.location.href='tables.php?action=cleantable'">
+                <i data-lucide="sparkles" style="width: 14px;"></i> Clean Tables
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="window.location.href='tables.php?action=mergetable'">
+                <i data-lucide="layers" style="width: 14px;"></i> Merge Tables
             </button>
             <button class="btn btn-secondary btn-sm" onclick="window.location.href='tables.php?action=add'">
                 <i data-lucide="grid-2x2" style="width: 14px;"></i> Add Table
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="window.location.href='sales.php'">
-                <i data-lucide="download" style="width: 14px;"></i> Export Report
             </button>
         </div>
     </div>
@@ -249,16 +249,23 @@ if (empty($reservations)) {
                         <td>
                             <div class="action-btns">
                                 <?php if ($status === 'Confirmed' || $status === 'Pending' || $status === 'Upcoming'): ?>
-                                <button class="action-btn" title="Mark Arrived" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'Arrived')">
+                                <button class="action-btn" title="Mark Arrived" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'Arrived', this)">
                                     <i data-lucide="user-check" style="color: #10B981;"></i>
                                 </button>
-                                <button class="action-btn" title="Cancel" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'Cancelled')">
+                                <button class="action-btn" title="Mark No Show" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'No Show', this)">
+                                    <i data-lucide="user-x" style="color: #64748B;"></i>
+                                </button>
+                                <button class="action-btn" title="Cancel" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'Cancelled', this)">
                                     <i data-lucide="x-circle" style="color: #E53935;"></i>
                                 </button>
                                 <?php elseif ($status === 'Arrived'): ?>
-                                <button class="action-btn" title="Seat Customer" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'Dining')">
+                                <button class="action-btn" title="Seat Customer" onclick="updateReservationStatus(<?php echo $res['id']; ?>, 'Dining', this)">
                                     <i data-lucide="play" style="color: var(--primary-red);"></i>
                                 </button>
+                                <?php elseif ($status === 'Dining' && !empty($res['bill_id'])): ?>
+                                <a class="action-btn" title="Open Bill & Settle Payment" href="bills.php?focus=<?php echo (int)$res['bill_id']; ?>">
+                                    <i data-lucide="receipt" style="color: var(--primary-red);"></i>
+                                </a>
                                 <?php endif; ?>
                             </div>
                         </td>
@@ -357,13 +364,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-async function updateReservationStatus(resId, newStatus) {
+const RES_ACTIONS = {
+    'Cancelled': 'reservations.cancel',
+    'Arrived': 'reservations.arrive',
+    'Dining': 'reservations.seat',
+    'No Show': 'reservations.noshow'
+};
+
+async function updateReservationStatus(resId, newStatus, btn) {
+    const action = RES_ACTIONS[newStatus];
+    if(!action) return;
     if(!confirm(`Mark this reservation as ${newStatus}?`)) return;
-    const action = newStatus === 'Cancelled' ? 'reservations.cancel' : (newStatus === 'Arrived' ? 'reservations.arrive' : 'reservations.seat');
-    const res = await apiRequest(action, { reservation_id: resId });
-    if(res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+
+    return withBusy(btn, async () => {
+        const res = await apiRequest(action, { reservation_id: resId });
+        if (res.success) smoothReload();
+    });
 }
 </script>
 

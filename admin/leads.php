@@ -3,10 +3,10 @@
 require_once 'includes/db.php';
 require_once 'models/Lead.php';
 require_once 'models/Table.php';
+require_once 'services/SyncService.php';
 
-include 'includes/header.php';
-
-// Handle Direct POST Action (if submitted via standard HTML form)
+// Handle Direct POST Action (if submitted via standard HTML form).
+// Must run before header.php emits HTML so the redirect below works.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'confirm_lead') {
         $leadId = (int)$_POST['lead_id'];
@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+include 'includes/header.php';
+
 // Fetch all leads
 $leads = Lead::getAll();
 $available_tables = Table::getAvailable();
@@ -26,12 +28,12 @@ $available_tables = Table::getAvailable();
 <div class="glass-card" style="padding: 16px 24px; margin-bottom: 4px;">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div class="filter-chips" style="margin: 0;">
-            <button class="chip-btn active" onclick="filterLeads('all')">All Leads (<?php echo count($leads); ?>)</button>
-            <button class="chip-btn" onclick="filterLeads('new')">New</button>
-            <button class="chip-btn" onclick="filterLeads('contacted')">Contacted</button>
-            <button class="chip-btn" onclick="filterLeads('confirmed')">Confirmed</button>
-            <button class="chip-btn" onclick="filterLeads('rejected')">Rejected</button>
-            <button class="chip-btn" onclick="filterLeads('cancelled')">Cancelled</button>
+            <button class="chip-btn active" onclick="filterLeads('all', event)">All Leads (<?php echo count($leads); ?>)</button>
+            <button class="chip-btn" onclick="filterLeads('pending', event)">Pending</button>
+            <button class="chip-btn" onclick="filterLeads('confirmed', event)">Confirmed</button>
+            <button class="chip-btn" onclick="filterLeads('completed', event)">Completed</button>
+            <button class="chip-btn" onclick="filterLeads('cancelled', event)">Cancelled</button>
+            <button class="chip-btn" onclick="filterLeads('noshow', event)">No Show</button>
         </div>
         <div style="display: flex; gap: 10px;">
             <input type="text" placeholder="Search customer or phone..." class="form-control" style="padding: 8px 16px; border-radius: var(--radius-pill); font-size: 0.825rem; width: 220px;" onkeyup="searchLeads(this.value)">
@@ -64,8 +66,15 @@ $available_tables = Table::getAvailable();
             <tbody>
                 <?php if (count($leads) > 0): ?>
                     <?php foreach ($leads as $lead): 
-                        $status = htmlspecialchars($lead['status']);
-                        $badgeClass = strtolower(str_replace(' ', '-', $status));
+                        // Standardize lead statuses: Pending, Contacted, Confirmed, Completed, Cancelled, No Show
+                        $rawStatus = trim($lead['status'] ?? '');
+                        if (empty($rawStatus) || $rawStatus === 'New' || $rawStatus === 'Waiting List') {
+                            $displayStatus = 'Pending';
+                        } else {
+                            $displayStatus = $rawStatus;
+                        }
+                        $status = htmlspecialchars($displayStatus);
+                        $badgeClass = strtolower(str_replace([' ', '_'], '-', $status));
                         $assignedTable = $lead['assigned_table_id'] ? Table::getById($lead['assigned_table_id']) : null;
                     ?>
                     <tr class="lead-row" data-status="<?php echo $badgeClass; ?>" id="lead-row-<?php echo $lead['id']; ?>">
@@ -90,41 +99,41 @@ $available_tables = Table::getAvailable();
                         </td>
                         <td style="white-space: nowrap;">
                             <?php if ($assignedTable): ?>
-                                <span style="font-weight: 800; color: var(--primary-red); font-size: 0.825rem;">T-<?php echo htmlspecialchars($assignedTable['table_number']); ?></span>
+                                <span style="font-weight: 800; color: var(--primary-red); font-size: 0.825rem;"><?php echo htmlspecialchars($assignedTable['table_number']); ?></span>
                             <?php else: ?>
                                 <span style="color: var(--text-muted); font-style: italic; font-size: 0.75rem;">Unassigned</span>
                             <?php endif; ?>
                         </td>
                         <td>
                             <div class="action-btns">
-                                <?php if ($status === 'New'): ?>
-                                <button type="button" class="action-btn action-btn-contact" title="Mark Contacted" onclick="markContacted(<?php echo $lead['id']; ?>)">
+                                <?php if ($displayStatus === 'Pending'): ?>
+                                <button type="button" class="action-btn action-btn-contact" title="Mark Contacted" onclick="markContacted(<?php echo $lead['id']; ?>, this)">
                                     <i data-lucide="phone"></i>
                                 </button>
                                 <?php endif; ?>
-                                
-                                <?php if ($status === 'New' || $status === 'Waiting List' || $status === 'Contacted'): ?>
-                                <button type="button" class="action-btn action-btn-confirm" title="Confirm & Assign Table" onclick="openAcceptModal(<?php echo $lead['id']; ?>, '<?php echo $lead['booking_date']; ?>', '<?php echo $lead['booking_time']; ?>')">
+
+                                <?php if ($displayStatus === 'Pending' || $displayStatus === 'Contacted'): ?>
+                                <button type="button" class="action-btn action-btn-confirm" title="Confirm & Assign Table" onclick="openAcceptModal(<?php echo $lead['id']; ?>, '<?php echo $lead['booking_date']; ?>', '<?php echo $lead['booking_time']; ?>', <?php echo (int)($lead['guest_count'] ?: 2); ?>)">
                                     <i data-lucide="check"></i>
                                 </button>
-                                <button type="button" class="action-btn action-btn-reject" title="Reject Lead" onclick="rejectLead(<?php echo $lead['id']; ?>)">
-                                    <i data-lucide="minus"></i>
+                                <button type="button" class="action-btn action-btn-reject" title="Reject (Fully Booked)" onclick="rejectLead(<?php echo $lead['id']; ?>, this)">
+                                    <i data-lucide="ban"></i>
                                 </button>
-                                <?php endif; ?>
-                                
-                                <?php if ($status !== 'Cancelled' && $status !== 'Completed' && $status !== 'Rejected' && $status !== 'Confirmed'): ?>
-                                <button type="button" class="action-btn action-btn-cancel" title="Cancel" onclick="cancelLead(<?php echo $lead['id']; ?>)">
+                                <button type="button" class="action-btn action-btn-cancel" title="Cancel Lead" onclick="cancelLead(<?php echo $lead['id']; ?>, this)">
                                     <i data-lucide="x"></i>
                                 </button>
                                 <?php endif; ?>
 
-                                <?php if ($status === 'Confirmed'): ?>
-                                <button type="button" class="action-btn action-btn-noshow" title="Mark No Show" onclick="noShowLead(<?php echo $lead['id']; ?>)">
+                                <?php if ($displayStatus === 'Confirmed'): ?>
+                                <button type="button" class="action-btn action-btn-noshow" title="Mark No Show" onclick="noShowLead(<?php echo $lead['id']; ?>, this)">
                                     <i data-lucide="user-x"></i>
+                                </button>
+                                <button type="button" class="action-btn action-btn-cancel" title="Cancel Lead" onclick="cancelLead(<?php echo $lead['id']; ?>, this)">
+                                    <i data-lucide="x"></i>
                                 </button>
                                 <?php endif; ?>
 
-                                <button type="button" class="action-btn action-btn-delete" title="Delete Lead" onclick="deleteLead(<?php echo $lead['id']; ?>)">
+                                <button type="button" class="action-btn action-btn-delete" title="Delete Lead" onclick="deleteLead(<?php echo $lead['id']; ?>, this)">
                                     <i data-lucide="trash-2"></i>
                                 </button>
                             </div>
@@ -184,7 +193,11 @@ $available_tables = Table::getAvailable();
 </div>
 
 <script>
-async function openAcceptModal(leadId, date, time) {
+let currentAcceptGuestCount = 2;
+let currentAcceptAvailableTables = [];
+
+async function openAcceptModal(leadId, date, time, guestCount = 2) {
+    currentAcceptGuestCount = parseInt(guestCount) || 2;
     document.getElementById('accept_lead_id').value = leadId;
     document.getElementById('accept_table_id').value = '';
     const container = document.getElementById('table_selection_container');
@@ -194,15 +207,22 @@ async function openAcceptModal(leadId, date, time) {
     try {
         const res = await fetch(`api/router.php?action=tables.available_for_time&date=${date}&time=${time}`).then(r => r.json());
         if (res.success && res.data.length > 0) {
+            currentAcceptAvailableTables = res.data;
             container.innerHTML = '';
             res.data.forEach(t => {
                 const tableName = t.table_name || `Table ${t.table_number}`;
                 const card = document.createElement('div');
                 card.className = 'table-select-card';
                 card.dataset.id = t.id;
+                
+                const isSmall = parseInt(t.capacity) < currentAcceptGuestCount;
+                const badgeStyle = isSmall ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;';
+                const warningTag = isSmall ? `<span style="font-size: 0.65rem; color: #ef4444; font-weight: 700; margin-top: 2px; display: block;">⚠️ Exceeds Capacity</span>` : '';
+
                 card.innerHTML = `
                     <div class="table-name-label">${tableName}</div>
-                    <div class="table-capacity-badge">${t.capacity} Seats</div>
+                    <div class="table-capacity-badge" style="${badgeStyle}">${t.capacity} Seats</div>
+                    ${warningTag}
                 `;
                 card.onclick = function() {
                     document.querySelectorAll('.table-select-card').forEach(c => c.classList.remove('selected'));
@@ -212,10 +232,20 @@ async function openAcceptModal(leadId, date, time) {
                 container.appendChild(card);
             });
         } else {
+            currentAcceptAvailableTables = [];
             container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">No tables available within 2-hour window</div>';
         }
     } catch (err) {
+        currentAcceptAvailableTables = [];
         container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 20px;">Failed to load tables</div>';
+    }
+}
+
+async function confirmLeadWithTable(leadId, tableId) {
+    const res = await apiRequest('leads.confirm', { lead_id: leadId, table_id: tableId });
+    if (res.success) {
+        closeModal('acceptLeadModal');
+        smoothReload();
     }
 }
 
@@ -229,61 +259,79 @@ async function submitAcceptLead(e) {
         return;
     }
 
-    const res = await apiRequest('leads.confirm', { lead_id: leadId, table_id: tableId });
-    if (res.success) {
+    const selectedTable = currentAcceptAvailableTables.find(t => t.id == tableId);
+    if (selectedTable && parseInt(selectedTable.capacity) < currentAcceptGuestCount) {
         closeModal('acceptLeadModal');
-        setTimeout(() => location.reload(), 800);
+        showCapacityWarningModal({
+            tableId: tableId,
+            tableName: selectedTable.table_name || `Table ${selectedTable.table_number}`,
+            tableCapacity: selectedTable.capacity,
+            partySize: currentAcceptGuestCount,
+            availableTables: currentAcceptAvailableTables,
+            onSelectTable: (newTableId) => {
+                confirmLeadWithTable(leadId, newTableId);
+            },
+            onMergeTables: () => {
+                window.location.href = 'tables.php?action=merge&primary=' + tableId;
+            },
+            onProceedAnyway: () => {
+                confirmLeadWithTable(leadId, tableId);
+            }
+        });
+        return;
     }
+
+    confirmLeadWithTable(leadId, tableId);
 }
 
-async function markContacted(leadId) {
-    const res = await apiRequest('leads.contacted', { lead_id: leadId });
-    if (res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+// One helper for every row action: busy button, then a soft reload on success.
+function leadAction(btn, action, payload, confirmText) {
+    if (confirmText && !confirm(confirmText)) return;
+    return withBusy(btn, async () => {
+        const res = await apiRequest(action, payload);
+        if (res.success) smoothReload();
+    });
 }
 
-async function rejectLead(leadId) {
+function markContacted(leadId, btn) {
+    return leadAction(btn, 'leads.contacted', { lead_id: leadId });
+}
+
+function rejectLead(leadId, btn) {
     const reason = prompt("Enter reason for rejecting booking (e.g. Fully Booked):", "Fully Booked");
     if (reason === null) return;
-
-    const res = await apiRequest('leads.reject', { lead_id: leadId, reason: reason });
-    if (res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+    return leadAction(btn, 'leads.reject', { lead_id: leadId, reason: reason });
 }
 
-async function cancelLead(leadId) {
-    if (!confirm("Cancel this booking?")) return;
-    const res = await apiRequest('leads.cancel', { lead_id: leadId });
-    if (res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+function cancelLead(leadId, btn) {
+    return leadAction(btn, 'leads.cancel', { lead_id: leadId }, "Cancel this booking?");
 }
 
-async function noShowLead(leadId) {
-    if (!confirm("Mark this booking as No Show?")) return;
-    const res = await apiRequest('leads.noshow', { lead_id: leadId });
-    if (res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+function noShowLead(leadId, btn) {
+    return leadAction(btn, 'leads.noshow', { lead_id: leadId }, "Mark this booking as No Show?");
 }
 
-async function deleteLead(leadId) {
-    if (!confirm("Delete this lead permanently?")) return;
-    const res = await apiRequest('leads.delete', { lead_id: leadId });
-    if (res.success) {
-        setTimeout(() => location.reload(), 800);
-    }
+function deleteLead(leadId, btn) {
+    return leadAction(btn, 'leads.delete', { lead_id: leadId }, "Delete this lead permanently? This also removes its reservation and bill.");
 }
 
-function filterLeads(statusFilter) {
+function filterLeads(statusFilter, evt) {
     document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    const trigger = (evt || window.event)?.currentTarget || (evt || window.event)?.target;
+    if (trigger) trigger.classList.add('active');
 
     const rows = document.querySelectorAll('.lead-row');
     rows.forEach(row => {
-        if (statusFilter === 'all' || row.dataset.status === statusFilter) {
+        const s = row.dataset.status;
+        if (statusFilter === 'all') {
+            row.style.display = '';
+        } else if (statusFilter === 'pending' && (s === 'pending' || s === 'new' || s === 'contacted')) {
+            row.style.display = '';
+        } else if (statusFilter === 'cancelled' && (s === 'cancelled' || s === 'rejected')) {
+            row.style.display = '';
+        } else if (statusFilter === 'noshow' && (s === 'noshow' || s === 'no-show')) {
+            row.style.display = '';
+        } else if (s === statusFilter) {
             row.style.display = '';
         } else {
             row.style.display = 'none';

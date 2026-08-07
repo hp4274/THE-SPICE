@@ -35,20 +35,24 @@ foreach ($payment_methods as $pm) {
     $chart_values[] = floatval($pm['total']);
 }
 
-// Fallback if no sales today so chart renders cleanly
-if (empty($chart_values)) {
-    $chart_labels = ['Cash', 'Credit Card', 'UPI / Digital'];
-    $chart_values = [450, 680, 320]; 
-}
+$has_chart_data = !empty($chart_values) && array_sum($chart_values) > 0;
 
 // 5. Today's Transactions List
 $stmt = $pdo->prepare("SELECT * FROM transactions WHERE DATE(created_at) = ? ORDER BY created_at DESC");
 $stmt->execute([$today]);
 $today_transactions = $stmt->fetchAll();
-if (empty($today_transactions)) {
-    $stmt = $pdo->query("SELECT * FROM transactions ORDER BY created_at DESC LIMIT 10");
-    $today_transactions = $stmt->fetchAll();
+
+// Deduplicate transactions list by unique bill / transaction ID & status
+$deduped_txns = [];
+$seen_keys = [];
+foreach ($today_transactions as $txn) {
+    $key = ($txn['bill_id'] ?? $txn['bill_no'] ?? $txn['id']) . '_' . $txn['status'] . '_' . $txn['amount'];
+    if (!isset($seen_keys[$key])) {
+        $seen_keys[$key] = true;
+        $deduped_txns[] = $txn;
+    }
 }
+$today_transactions = $deduped_txns;
 ?>
 
 <!-- Sales KPI Grid -->
@@ -111,8 +115,16 @@ if (empty($today_transactions)) {
         <div class="card-header">
             <h2 class="card-title"><i data-lucide="pie-chart"></i> Revenue by Payment Method</h2>
         </div>
-        <div style="height: 240px; position: relative;">
-            <canvas id="paymentChart"></canvas>
+        <div style="height: 240px; position: relative; display: flex; align-items: center; justify-content: center;">
+            <?php if ($has_chart_data): ?>
+                <canvas id="paymentChart"></canvas>
+            <?php else: ?>
+                <div class="empty-state" style="padding: 20px; text-align: center;">
+                    <div class="empty-state-icon"><i data-lucide="pie-chart" style="width: 32px; height: 32px; color: var(--text-muted);"></i></div>
+                    <div class="empty-state-title" style="font-size: 0.9rem; font-weight: 700; margin-top: 8px;">No Sales Data Today</div>
+                    <div class="empty-state-desc" style="font-size: 0.775rem; color: var(--text-muted);">Revenue breakdown will display as payments are settled.</div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -137,10 +149,11 @@ if (empty($today_transactions)) {
                         <?php foreach ($today_transactions as $txn): 
                             $status = htmlspecialchars($txn['status']);
                             $badgeClass = strtolower(str_replace(' ', '-', $status));
+                            $billNo = $txn['bill_id'] ?? $txn['bill_no'] ?? $txn['bill_number'] ?? $txn['id'] ?? 'N/A';
                         ?>
                         <tr>
                             <td style="font-weight: 700; color: var(--text-muted);"><?php echo date('g:i A', strtotime($txn['created_at'])); ?></td>
-                            <td style="font-weight: 800; color: var(--primary-red);">Bill #<?php echo htmlspecialchars($txn['bill_id']); ?></td>
+                            <td style="font-weight: 800; color: var(--primary-red);">Bill #<?php echo htmlspecialchars($billNo); ?></td>
                             <td style="font-weight: 600;"><?php echo htmlspecialchars($txn['payment_method'] ?: 'Cash'); ?></td>
                             <td style="font-weight: 800; color: var(--text-primary);">$<?php echo number_format($txn['amount'], 2); ?></td>
                             <td><span class="status-badge status-<?php echo $badgeClass; ?>"><?php echo $status; ?></span></td>

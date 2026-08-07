@@ -1,5 +1,8 @@
 <?php
 // admin/includes/header.php
+require_once __DIR__ . '/../services/SyncService.php';
+SyncService::checkAutoNoShows();
+
 $current_page = basename($_SERVER['PHP_SELF']);
 
 // Map page names to titles & breadcrumbs
@@ -39,7 +42,7 @@ $title_info = $page_titles[$current_page] ?? ['Admin Panel', 'Dashboard'];
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Realtime & Custom JS -->
-    <script src="js/realtime.js"></script>
+    <script src="js/realtime.js?v=<?php echo time(); ?>"></script>
 </head>
 <body>
 
@@ -140,11 +143,6 @@ $title_info = $page_titles[$current_page] ?? ['Admin Panel', 'Dashboard'];
                     <!-- User Profile Avatar Menu -->
                     <div class="profile-menu" onclick="alert('Admin Profile Settings')">
                         <img src="https://ui-avatars.com/api/?name=Spice+Admin&background=E53935&color=fff" alt="Admin" class="avatar">
-                        <div class="profile-info">
-                            <span class="profile-name">Spice Admin</span>
-                            <span class="profile-role">Restaurant Manager</span>
-                        </div>
-                        <i data-lucide="chevron-down" style="width: 14px; color: var(--text-secondary); margin-left: 2px;"></i>
                     </div>
                 </div>
             </header>

@@ -18,7 +18,7 @@ $sqls = [
         special_request TEXT,
         booking_source VARCHAR(50) DEFAULT 'Online',
         assigned_table_id INT NULL,
-        status ENUM('New', 'Confirmed', 'Waiting List', 'Cancelled', 'Rejected', 'No Show', 'Completed') DEFAULT 'New',
+        status ENUM('New', 'Contacted', 'Confirmed', 'Waiting List', 'Cancelled', 'Rejected', 'No Show', 'Completed') DEFAULT 'New',
         rejection_reason TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

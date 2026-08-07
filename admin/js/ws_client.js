@@ -1,9 +1,12 @@
-// admin/js/ws_client.js - The Spice Admin Live WebSocket Notification Client
+// admin/js/ws_client.js - The Spice Admin Live Polling Sync Client (100% Hostinger & Shared Hosting Compatible)
 
 (function() {
-    let ws = null;
-    let reconnectTimer = null;
-    const wsPort = 8080;
+    let isPolling = false;
+    let pollInterval = null;
+    let lastAuditId = 0;
+    let lastLeadCount = -1;
+    let lastTableState = null;
+    let pendingRemoteChange = false;
 
     // Web Audio API Synthesized Chime (Zero External Files Needed)
     function playChimeSound() {
@@ -42,132 +45,121 @@
         }
     }
 
-    function initWebSocket() {
-        const host = window.location.hostname || 'localhost';
-        const wsUrl = `ws://${host}:${wsPort}`;
+    // Never yank the page out from under the user: a reload while a modal is open
+    // wipes a half-filled form, and a reload right after our own action double-loads.
+    function reloadIsSafe() {
+        if (document.hidden) return false;
+        if (document.querySelector('.modal-overlay.active')) return false;
+        if (document.body.classList.contains('is-refreshing')) return false;
+        if (window.__lastLocalMutation && (Date.now() - window.__lastLocalMutation) < 6000) return false;
+        return true;
+    }
+
+    function refreshPage() {
+        if (typeof window.smoothReload === 'function') {
+            window.smoothReload(300);
+        } else {
+            location.reload();
+        }
+    }
+
+    function isLivePage() {
+        const page = window.location.pathname;
+        return page.includes('leads.php') || page.includes('reservations.php')
+            || page.includes('tables.php') || page.includes('index.php');
+    }
+
+    function startPolling() {
+        if (isPolling) return;
+        isPolling = true;
+
+        // Initial Poll
+        pollServer();
+
+        // 5 Second Interval Poll
+        pollInterval = setInterval(pollServer, 5000);
+
+        // Catch up immediately when the tab comes back into focus
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) pollServer();
+        });
+    }
+
+    async function pollServer() {
+        // A remote change arrived while a modal was open / an action was in flight —
+        // apply it as soon as the user is idle again.
+        if (pendingRemoteChange && isLivePage() && reloadIsSafe()) {
+            pendingRemoteChange = false;
+            refreshPage();
+            return;
+        }
 
         try {
-            ws = new WebSocket(wsUrl);
+            const response = await fetch('api/router.php?action=sync.poll', {
+                method: 'GET',
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            if (!data || !data.success) return;
 
-            ws.onopen = function() {
-                console.log('[Ratchet WS] Connected to Admin Live Notification Server on ' + wsUrl);
-                if (reconnectTimer) {
-                    clearTimeout(reconnectTimer);
-                    reconnectTimer = null;
+            // A. Overdue No-Show Alert
+            if (data.no_shows_updated > 0) {
+                if (typeof showToast === 'function') {
+                    showToast(`⚠️ ${data.no_shows_updated} overdue booking(s) auto-marked No Show`, 'error');
                 }
-            };
-
-            ws.onmessage = function(e) {
-                try {
-                    const payload = JSON.parse(e.data);
-                    handleServerEvent(payload);
-                } catch (err) {
-                    console.error('[Ratchet WS] Error parsing message:', err);
+                if (isLivePage() && reloadIsSafe()) {
+                    refreshPage();
+                    return;
                 }
-            };
+            }
 
-            ws.onclose = function() {
-                console.warn('[Ratchet WS] Disconnected. Reconnecting in 5 seconds...');
-                scheduleReconnect();
-            };
+            // B. State Change Detection (Multi-Admin / Web Inquiries)
+            if (lastAuditId === 0) {
+                // First Baseline Sync
+                lastAuditId = data.latest_audit_id || 0;
+                lastLeadCount = data.lead_count ?? -1;
+                lastTableState = data.table_state || null;
+            } else {
+                // Detect New Inquiries / Remote Changes
+                const auditChanged = data.latest_audit_id > lastAuditId;
+                const leadsChanged = lastLeadCount >= 0 && data.lead_count !== lastLeadCount;
+                const tablesChanged = lastTableState && data.table_state !== lastTableState;
 
-            ws.onerror = function() {
-                console.warn('[Ratchet WS] Socket encountered error.');
-                ws.close();
-            };
-        } catch (err) {
-            console.error('[Ratchet WS] Connection error:', err);
-            scheduleReconnect();
+                if (auditChanged || leadsChanged || tablesChanged) {
+                    const newLeadReceived = leadsChanged && data.lead_count > lastLeadCount;
+
+                    lastAuditId = data.latest_audit_id;
+                    lastLeadCount = data.lead_count;
+                    lastTableState = data.table_state;
+
+                    // Play chime on new lead count increase
+                    if (newLeadReceived) {
+                        playChimeSound();
+                        if (typeof showToast === 'function') {
+                            showToast('🎉 New Customer Booking Received!', 'success');
+                        }
+                    }
+
+                    // Refresh active management pages, unless the user is mid-task
+                    if (isLivePage()) {
+                        if (reloadIsSafe()) {
+                            refreshPage();
+                        } else {
+                            pendingRemoteChange = true;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            // Silent network pass
         }
     }
 
-    function scheduleReconnect() {
-        if (!reconnectTimer) {
-            reconnectTimer = setTimeout(initWebSocket, 5000);
-        }
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function handleServerEvent(payload) {
-        if (!payload || !payload.event) return;
-
-        console.log('[Ratchet WS Event]', payload.event, payload.data);
-
-        if (payload.event === 'new_lead') {
-            const data = payload.data || {};
-            const customerName = data.customer_name || 'New Customer';
-            const guestCountStr = data.guest_count ? ` (${data.guest_count} Guests)` : '';
-            const bookingDate = data.booking_date || '';
-            const bookingTime = data.booking_time || '';
-            const timeInfo = bookingDate + (bookingTime ? ' at ' + bookingTime : '');
-
-            // 1. Play Audio Chime Sound
-            playChimeSound();
-
-            // 2. Show Glass Toast Alert
-            if (typeof showToast === 'function') {
-                showToast(`🎉 New Booking Request! ${customerName}${guestCountStr}`, 'success');
-            }
-
-            // 3. Highlight Topbar Notification Dot
-            const dot = document.querySelector('.badge-dot');
-            if (dot) {
-                dot.style.display = 'block';
-                dot.classList.add('pulse');
-            }
-
-            // 4. Prepend item to Header Notification Dropdown List
-            const notifContainer = document.getElementById('notifListContainer');
-            if (notifContainer) {
-                const noNotif = document.getElementById('noNotifPlaceholder');
-                if (noNotif) {
-                    noNotif.remove();
-                }
-
-                const newNotifHtml = `
-                    <a href="leads.php" class="notif-item" style="display: block; text-decoration: none; padding: 14px 18px; border-bottom: 1px solid rgba(0,0,0,0.04); background: rgba(229,57,53,0.06); transition: background 0.2s;" onmouseover="this.style.background='rgba(229,57,53,0.1)'" onmouseout="this.style.background='rgba(229,57,53,0.06)'">
-                        <div style="display: flex; align-items: flex-start; gap: 12px;">
-                            <div style="background: var(--light-pink); color: var(--primary-red); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                <i data-lucide="users" style="width: 16px;"></i>
-                            </div>
-                            <div style="flex: 1;">
-                                <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">New Lead Request <span style="font-size:10px; background:var(--primary-red); color:#fff; padding:2px 6px; border-radius:10px; margin-left:4px;">NEW</span></div>
-                                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">${escapeHtml(customerName)}${escapeHtml(guestCountStr)}</div>
-                                <div style="font-size: 11px; color: var(--primary-red); margin-top: 4px; font-weight: 600;">${escapeHtml(timeInfo)}</div>
-                            </div>
-                        </div>
-                    </a>
-                `;
-
-                notifContainer.insertAdjacentHTML('afterbegin', newNotifHtml);
-
-                if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                    window.lucide.createIcons();
-                }
-            }
-
-            // 5. Auto Refresh Leads Table if on leads.php page
-            if (window.location.pathname.includes('leads.php')) {
-                setTimeout(() => {
-                    location.reload();
-                }, 1200);
-            }
-        }
-    }
-
-    // Initialize Ratchet Client on DOM Load
+    // Initialize Polling Engine on DOM Load
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        initWebSocket();
+        startPolling();
     } else {
-        document.addEventListener('DOMContentLoaded', initWebSocket);
+        document.addEventListener('DOMContentLoaded', startPolling);
     }
 })();
